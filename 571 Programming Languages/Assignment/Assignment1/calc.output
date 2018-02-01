@@ -1,0 +1,624 @@
+Rules useless in parser due to conflicts
+
+   20 expr_float: TOK_FLOAT
+
+   26 expr: TOK_NUM
+
+
+State 3 conflicts: 5 reduce/reduce
+State 5 conflicts: 5 reduce/reduce
+
+
+Grammar
+
+    0 $accept: stmt $end
+
+    1 stmt: %empty
+    2     | stmt expr_stmt
+
+    3 expr_stmt: expr TOK_SEMICOLON
+    4          | TOK_PRINTLN expr TOK_SEMICOLON
+    5          | expr_float TOK_SEMICOLON
+    6          | TOK_PRINTLN expr_float TOK_SEMICOLON
+
+    7 expr_float: TOK_FLOAT
+    8           | expr_float TOK_ADD expr
+    9           | expr TOK_ADD expr_float
+   10           | expr_float TOK_ADD expr_float
+   11           | expr_float TOK_SUB expr
+   12           | expr TOK_SUB expr_float
+   13           | expr_float TOK_SUB expr_float
+   14           | expr_float TOK_MUL expr
+   15           | expr TOK_MUL expr_float
+   16           | expr_float TOK_MUL expr_float
+   17           | expr_float TOK_DIV expr
+   18           | expr TOK_DIV expr_float
+   19           | expr_float TOK_DIV expr_float
+   20           | TOK_FLOAT
+
+   21 expr: TOK_NUM
+   22     | expr TOK_ADD expr
+   23     | expr TOK_SUB expr
+   24     | expr TOK_MUL expr
+   25     | expr TOK_DIV expr
+   26     | TOK_NUM
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+TOK_SEMICOLON (258) 3 4 5 6
+TOK_ADD (259) 8 9 10 22
+TOK_SUB (260) 11 12 13 23
+TOK_MUL (261) 14 15 16 24
+TOK_DIV (262) 17 18 19 25
+TOK_NUM (263) 21 26
+TOK_PRINTLN (264) 4 6
+TOK_FLOAT (265) 7 20
+
+
+Nonterminals, with rules where they appear
+
+$accept (11)
+    on left: 0
+stmt (12)
+    on left: 1 2, on right: 0 2
+expr_stmt (13)
+    on left: 3 4 5 6, on right: 2
+expr_float (14)
+    on left: 7 8 9 10 11 12 13 14 15 16 17 18 19 20, on right: 5 6
+    8 9 10 11 12 13 14 15 16 17 18 19
+expr (15)
+    on left: 21 22 23 24 25 26, on right: 3 4 8 9 11 12 14 15 17 18
+    22 23 24 25
+
+
+State 0
+
+    0 $accept: . stmt $end
+
+    $default  reduce using rule 1 (stmt)
+
+    stmt  go to state 1
+
+
+State 1
+
+    0 $accept: stmt . $end
+    2 stmt: stmt . expr_stmt
+
+    $end         shift, and go to state 2
+    TOK_NUM      shift, and go to state 3
+    TOK_PRINTLN  shift, and go to state 4
+    TOK_FLOAT    shift, and go to state 5
+
+    expr_stmt   go to state 6
+    expr_float  go to state 7
+    expr        go to state 8
+
+
+State 2
+
+    0 $accept: stmt $end .
+
+    $default  accept
+
+
+State 3
+
+   21 expr: TOK_NUM .
+   26     | TOK_NUM .
+
+    TOK_SEMICOLON  reduce using rule 21 (expr)
+    TOK_SEMICOLON  [reduce using rule 26 (expr)]
+    TOK_ADD        reduce using rule 21 (expr)
+    TOK_ADD        [reduce using rule 26 (expr)]
+    TOK_SUB        reduce using rule 21 (expr)
+    TOK_SUB        [reduce using rule 26 (expr)]
+    TOK_MUL        reduce using rule 21 (expr)
+    TOK_MUL        [reduce using rule 26 (expr)]
+    TOK_DIV        reduce using rule 21 (expr)
+    TOK_DIV        [reduce using rule 26 (expr)]
+    $default       reduce using rule 21 (expr)
+
+
+State 4
+
+    4 expr_stmt: TOK_PRINTLN . expr TOK_SEMICOLON
+    6          | TOK_PRINTLN . expr_float TOK_SEMICOLON
+
+    TOK_NUM    shift, and go to state 3
+    TOK_FLOAT  shift, and go to state 5
+
+    expr_float  go to state 9
+    expr        go to state 10
+
+
+State 5
+
+    7 expr_float: TOK_FLOAT .
+   20           | TOK_FLOAT .
+
+    TOK_SEMICOLON  reduce using rule 7 (expr_float)
+    TOK_SEMICOLON  [reduce using rule 20 (expr_float)]
+    TOK_ADD        reduce using rule 7 (expr_float)
+    TOK_ADD        [reduce using rule 20 (expr_float)]
+    TOK_SUB        reduce using rule 7 (expr_float)
+    TOK_SUB        [reduce using rule 20 (expr_float)]
+    TOK_MUL        reduce using rule 7 (expr_float)
+    TOK_MUL        [reduce using rule 20 (expr_float)]
+    TOK_DIV        reduce using rule 7 (expr_float)
+    TOK_DIV        [reduce using rule 20 (expr_float)]
+    $default       reduce using rule 7 (expr_float)
+
+
+State 6
+
+    2 stmt: stmt expr_stmt .
+
+    $default  reduce using rule 2 (stmt)
+
+
+State 7
+
+    5 expr_stmt: expr_float . TOK_SEMICOLON
+    8 expr_float: expr_float . TOK_ADD expr
+   10           | expr_float . TOK_ADD expr_float
+   11           | expr_float . TOK_SUB expr
+   13           | expr_float . TOK_SUB expr_float
+   14           | expr_float . TOK_MUL expr
+   16           | expr_float . TOK_MUL expr_float
+   17           | expr_float . TOK_DIV expr
+   19           | expr_float . TOK_DIV expr_float
+
+    TOK_SEMICOLON  shift, and go to state 11
+    TOK_ADD        shift, and go to state 12
+    TOK_SUB        shift, and go to state 13
+    TOK_MUL        shift, and go to state 14
+    TOK_DIV        shift, and go to state 15
+
+
+State 8
+
+    3 expr_stmt: expr . TOK_SEMICOLON
+    9 expr_float: expr . TOK_ADD expr_float
+   12           | expr . TOK_SUB expr_float
+   15           | expr . TOK_MUL expr_float
+   18           | expr . TOK_DIV expr_float
+   22 expr: expr . TOK_ADD expr
+   23     | expr . TOK_SUB expr
+   24     | expr . TOK_MUL expr
+   25     | expr . TOK_DIV expr
+
+    TOK_SEMICOLON  shift, and go to state 16
+    TOK_ADD        shift, and go to state 17
+    TOK_SUB        shift, and go to state 18
+    TOK_MUL        shift, and go to state 19
+    TOK_DIV        shift, and go to state 20
+
+
+State 9
+
+    6 expr_stmt: TOK_PRINTLN expr_float . TOK_SEMICOLON
+    8 expr_float: expr_float . TOK_ADD expr
+   10           | expr_float . TOK_ADD expr_float
+   11           | expr_float . TOK_SUB expr
+   13           | expr_float . TOK_SUB expr_float
+   14           | expr_float . TOK_MUL expr
+   16           | expr_float . TOK_MUL expr_float
+   17           | expr_float . TOK_DIV expr
+   19           | expr_float . TOK_DIV expr_float
+
+    TOK_SEMICOLON  shift, and go to state 21
+    TOK_ADD        shift, and go to state 12
+    TOK_SUB        shift, and go to state 13
+    TOK_MUL        shift, and go to state 14
+    TOK_DIV        shift, and go to state 15
+
+
+State 10
+
+    4 expr_stmt: TOK_PRINTLN expr . TOK_SEMICOLON
+    9 expr_float: expr . TOK_ADD expr_float
+   12           | expr . TOK_SUB expr_float
+   15           | expr . TOK_MUL expr_float
+   18           | expr . TOK_DIV expr_float
+   22 expr: expr . TOK_ADD expr
+   23     | expr . TOK_SUB expr
+   24     | expr . TOK_MUL expr
+   25     | expr . TOK_DIV expr
+
+    TOK_SEMICOLON  shift, and go to state 22
+    TOK_ADD        shift, and go to state 17
+    TOK_SUB        shift, and go to state 18
+    TOK_MUL        shift, and go to state 19
+    TOK_DIV        shift, and go to state 20
+
+
+State 11
+
+    5 expr_stmt: expr_float TOK_SEMICOLON .
+
+    $default  reduce using rule 5 (expr_stmt)
+
+
+State 12
+
+    8 expr_float: expr_float TOK_ADD . expr
+   10           | expr_float TOK_ADD . expr_float
+
+    TOK_NUM    shift, and go to state 3
+    TOK_FLOAT  shift, and go to state 5
+
+    expr_float  go to state 23
+    expr        go to state 24
+
+
+State 13
+
+   11 expr_float: expr_float TOK_SUB . expr
+   13           | expr_float TOK_SUB . expr_float
+
+    TOK_NUM    shift, and go to state 3
+    TOK_FLOAT  shift, and go to state 5
+
+    expr_float  go to state 25
+    expr        go to state 26
+
+
+State 14
+
+   14 expr_float: expr_float TOK_MUL . expr
+   16           | expr_float TOK_MUL . expr_float
+
+    TOK_NUM    shift, and go to state 3
+    TOK_FLOAT  shift, and go to state 5
+
+    expr_float  go to state 27
+    expr        go to state 28
+
+
+State 15
+
+   17 expr_float: expr_float TOK_DIV . expr
+   19           | expr_float TOK_DIV . expr_float
+
+    TOK_NUM    shift, and go to state 3
+    TOK_FLOAT  shift, and go to state 5
+
+    expr_float  go to state 29
+    expr        go to state 30
+
+
+State 16
+
+    3 expr_stmt: expr TOK_SEMICOLON .
+
+    $default  reduce using rule 3 (expr_stmt)
+
+
+State 17
+
+    9 expr_float: expr TOK_ADD . expr_float
+   22 expr: expr TOK_ADD . expr
+
+    TOK_NUM    shift, and go to state 3
+    TOK_FLOAT  shift, and go to state 5
+
+    expr_float  go to state 31
+    expr        go to state 32
+
+
+State 18
+
+   12 expr_float: expr TOK_SUB . expr_float
+   23 expr: expr TOK_SUB . expr
+
+    TOK_NUM    shift, and go to state 3
+    TOK_FLOAT  shift, and go to state 5
+
+    expr_float  go to state 33
+    expr        go to state 34
+
+
+State 19
+
+   15 expr_float: expr TOK_MUL . expr_float
+   24 expr: expr TOK_MUL . expr
+
+    TOK_NUM    shift, and go to state 3
+    TOK_FLOAT  shift, and go to state 5
+
+    expr_float  go to state 35
+    expr        go to state 36
+
+
+State 20
+
+   18 expr_float: expr TOK_DIV . expr_float
+   25 expr: expr TOK_DIV . expr
+
+    TOK_NUM    shift, and go to state 3
+    TOK_FLOAT  shift, and go to state 5
+
+    expr_float  go to state 37
+    expr        go to state 38
+
+
+State 21
+
+    6 expr_stmt: TOK_PRINTLN expr_float TOK_SEMICOLON .
+
+    $default  reduce using rule 6 (expr_stmt)
+
+
+State 22
+
+    4 expr_stmt: TOK_PRINTLN expr TOK_SEMICOLON .
+
+    $default  reduce using rule 4 (expr_stmt)
+
+
+State 23
+
+    8 expr_float: expr_float . TOK_ADD expr
+   10           | expr_float . TOK_ADD expr_float
+   10           | expr_float TOK_ADD expr_float .
+   11           | expr_float . TOK_SUB expr
+   13           | expr_float . TOK_SUB expr_float
+   14           | expr_float . TOK_MUL expr
+   16           | expr_float . TOK_MUL expr_float
+   17           | expr_float . TOK_DIV expr
+   19           | expr_float . TOK_DIV expr_float
+
+    TOK_MUL  shift, and go to state 14
+    TOK_DIV  shift, and go to state 15
+
+    $default  reduce using rule 10 (expr_float)
+
+
+State 24
+
+    8 expr_float: expr_float TOK_ADD expr .
+    9           | expr . TOK_ADD expr_float
+   12           | expr . TOK_SUB expr_float
+   15           | expr . TOK_MUL expr_float
+   18           | expr . TOK_DIV expr_float
+   22 expr: expr . TOK_ADD expr
+   23     | expr . TOK_SUB expr
+   24     | expr . TOK_MUL expr
+   25     | expr . TOK_DIV expr
+
+    TOK_MUL  shift, and go to state 19
+    TOK_DIV  shift, and go to state 20
+
+    $default  reduce using rule 8 (expr_float)
+
+
+State 25
+
+    8 expr_float: expr_float . TOK_ADD expr
+   10           | expr_float . TOK_ADD expr_float
+   11           | expr_float . TOK_SUB expr
+   13           | expr_float . TOK_SUB expr_float
+   13           | expr_float TOK_SUB expr_float .
+   14           | expr_float . TOK_MUL expr
+   16           | expr_float . TOK_MUL expr_float
+   17           | expr_float . TOK_DIV expr
+   19           | expr_float . TOK_DIV expr_float
+
+    TOK_MUL  shift, and go to state 14
+    TOK_DIV  shift, and go to state 15
+
+    $default  reduce using rule 13 (expr_float)
+
+
+State 26
+
+    9 expr_float: expr . TOK_ADD expr_float
+   11           | expr_float TOK_SUB expr .
+   12           | expr . TOK_SUB expr_float
+   15           | expr . TOK_MUL expr_float
+   18           | expr . TOK_DIV expr_float
+   22 expr: expr . TOK_ADD expr
+   23     | expr . TOK_SUB expr
+   24     | expr . TOK_MUL expr
+   25     | expr . TOK_DIV expr
+
+    TOK_MUL  shift, and go to state 19
+    TOK_DIV  shift, and go to state 20
+
+    $default  reduce using rule 11 (expr_float)
+
+
+State 27
+
+    8 expr_float: expr_float . TOK_ADD expr
+   10           | expr_float . TOK_ADD expr_float
+   11           | expr_float . TOK_SUB expr
+   13           | expr_float . TOK_SUB expr_float
+   14           | expr_float . TOK_MUL expr
+   16           | expr_float . TOK_MUL expr_float
+   16           | expr_float TOK_MUL expr_float .
+   17           | expr_float . TOK_DIV expr
+   19           | expr_float . TOK_DIV expr_float
+
+    $default  reduce using rule 16 (expr_float)
+
+
+State 28
+
+    9 expr_float: expr . TOK_ADD expr_float
+   12           | expr . TOK_SUB expr_float
+   14           | expr_float TOK_MUL expr .
+   15           | expr . TOK_MUL expr_float
+   18           | expr . TOK_DIV expr_float
+   22 expr: expr . TOK_ADD expr
+   23     | expr . TOK_SUB expr
+   24     | expr . TOK_MUL expr
+   25     | expr . TOK_DIV expr
+
+    $default  reduce using rule 14 (expr_float)
+
+
+State 29
+
+    8 expr_float: expr_float . TOK_ADD expr
+   10           | expr_float . TOK_ADD expr_float
+   11           | expr_float . TOK_SUB expr
+   13           | expr_float . TOK_SUB expr_float
+   14           | expr_float . TOK_MUL expr
+   16           | expr_float . TOK_MUL expr_float
+   17           | expr_float . TOK_DIV expr
+   19           | expr_float . TOK_DIV expr_float
+   19           | expr_float TOK_DIV expr_float .
+
+    $default  reduce using rule 19 (expr_float)
+
+
+State 30
+
+    9 expr_float: expr . TOK_ADD expr_float
+   12           | expr . TOK_SUB expr_float
+   15           | expr . TOK_MUL expr_float
+   17           | expr_float TOK_DIV expr .
+   18           | expr . TOK_DIV expr_float
+   22 expr: expr . TOK_ADD expr
+   23     | expr . TOK_SUB expr
+   24     | expr . TOK_MUL expr
+   25     | expr . TOK_DIV expr
+
+    $default  reduce using rule 17 (expr_float)
+
+
+State 31
+
+    8 expr_float: expr_float . TOK_ADD expr
+    9           | expr TOK_ADD expr_float .
+   10           | expr_float . TOK_ADD expr_float
+   11           | expr_float . TOK_SUB expr
+   13           | expr_float . TOK_SUB expr_float
+   14           | expr_float . TOK_MUL expr
+   16           | expr_float . TOK_MUL expr_float
+   17           | expr_float . TOK_DIV expr
+   19           | expr_float . TOK_DIV expr_float
+
+    TOK_MUL  shift, and go to state 14
+    TOK_DIV  shift, and go to state 15
+
+    $default  reduce using rule 9 (expr_float)
+
+
+State 32
+
+    9 expr_float: expr . TOK_ADD expr_float
+   12           | expr . TOK_SUB expr_float
+   15           | expr . TOK_MUL expr_float
+   18           | expr . TOK_DIV expr_float
+   22 expr: expr . TOK_ADD expr
+   22     | expr TOK_ADD expr .
+   23     | expr . TOK_SUB expr
+   24     | expr . TOK_MUL expr
+   25     | expr . TOK_DIV expr
+
+    TOK_MUL  shift, and go to state 19
+    TOK_DIV  shift, and go to state 20
+
+    $default  reduce using rule 22 (expr)
+
+
+State 33
+
+    8 expr_float: expr_float . TOK_ADD expr
+   10           | expr_float . TOK_ADD expr_float
+   11           | expr_float . TOK_SUB expr
+   12           | expr TOK_SUB expr_float .
+   13           | expr_float . TOK_SUB expr_float
+   14           | expr_float . TOK_MUL expr
+   16           | expr_float . TOK_MUL expr_float
+   17           | expr_float . TOK_DIV expr
+   19           | expr_float . TOK_DIV expr_float
+
+    TOK_MUL  shift, and go to state 14
+    TOK_DIV  shift, and go to state 15
+
+    $default  reduce using rule 12 (expr_float)
+
+
+State 34
+
+    9 expr_float: expr . TOK_ADD expr_float
+   12           | expr . TOK_SUB expr_float
+   15           | expr . TOK_MUL expr_float
+   18           | expr . TOK_DIV expr_float
+   22 expr: expr . TOK_ADD expr
+   23     | expr . TOK_SUB expr
+   23     | expr TOK_SUB expr .
+   24     | expr . TOK_MUL expr
+   25     | expr . TOK_DIV expr
+
+    TOK_MUL  shift, and go to state 19
+    TOK_DIV  shift, and go to state 20
+
+    $default  reduce using rule 23 (expr)
+
+
+State 35
+
+    8 expr_float: expr_float . TOK_ADD expr
+   10           | expr_float . TOK_ADD expr_float
+   11           | expr_float . TOK_SUB expr
+   13           | expr_float . TOK_SUB expr_float
+   14           | expr_float . TOK_MUL expr
+   15           | expr TOK_MUL expr_float .
+   16           | expr_float . TOK_MUL expr_float
+   17           | expr_float . TOK_DIV expr
+   19           | expr_float . TOK_DIV expr_float
+
+    $default  reduce using rule 15 (expr_float)
+
+
+State 36
+
+    9 expr_float: expr . TOK_ADD expr_float
+   12           | expr . TOK_SUB expr_float
+   15           | expr . TOK_MUL expr_float
+   18           | expr . TOK_DIV expr_float
+   22 expr: expr . TOK_ADD expr
+   23     | expr . TOK_SUB expr
+   24     | expr . TOK_MUL expr
+   24     | expr TOK_MUL expr .
+   25     | expr . TOK_DIV expr
+
+    $default  reduce using rule 24 (expr)
+
+
+State 37
+
+    8 expr_float: expr_float . TOK_ADD expr
+   10           | expr_float . TOK_ADD expr_float
+   11           | expr_float . TOK_SUB expr
+   13           | expr_float . TOK_SUB expr_float
+   14           | expr_float . TOK_MUL expr
+   16           | expr_float . TOK_MUL expr_float
+   17           | expr_float . TOK_DIV expr
+   18           | expr TOK_DIV expr_float .
+   19           | expr_float . TOK_DIV expr_float
+
+    $default  reduce using rule 18 (expr_float)
+
+
+State 38
+
+    9 expr_float: expr . TOK_ADD expr_float
+   12           | expr . TOK_SUB expr_float
+   15           | expr . TOK_MUL expr_float
+   18           | expr . TOK_DIV expr_float
+   22 expr: expr . TOK_ADD expr
+   23     | expr . TOK_SUB expr
+   24     | expr . TOK_MUL expr
+   25     | expr . TOK_DIV expr
+   25     | expr TOK_DIV expr .
+
+    $default  reduce using rule 25 (expr)
