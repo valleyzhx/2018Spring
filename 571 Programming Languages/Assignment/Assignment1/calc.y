@@ -18,22 +18,22 @@
 
 %%
 
-stmt: 
-	| stmt expr_stmt
+stmt: /* could be empty */
+ | stmt expr_stmt /* which means could be a lot of expr_stmt */
 ;
 
-expr_stmt:
-	   expr TOK_SEMICOLON
-	   | TOK_PRINTLN expr TOK_SEMICOLON 
+expr_stmt: expr TOK_SEMICOLON   /* do nothing */
+ | expr_float TOK_SEMICOLON     /* do nothing */
+ | TOK_PRINTLN expr TOK_SEMICOLON
 		{
 			fprintf(stdout, "the value is %d\n", $2);
 		}
-	   | expr_float TOK_SEMICOLON
-	   | TOK_PRINTLN expr_float TOK_SEMICOLON
-		{ fprintf(stdout, "the value is %f\n", $2);} 
+ | TOK_PRINTLN expr_float TOK_SEMICOLON
+		{ fprintf(stdout, "the value is %f\n", $2);}
 ;
+
 expr_float: TOK_FLOAT
-|expr_float TOK_ADD expr           {$$ = $1 + $3;}
+| expr_float TOK_ADD expr           {$$ = $1 + $3;}
 | expr TOK_ADD expr_float           {$$ = $1 + $3;}
 | expr_float TOK_ADD expr_float     {$$ = $1 + $3;}
 
@@ -53,24 +53,24 @@ expr_float: TOK_FLOAT
 ;
 
 expr: TOK_NUM
-|	expr TOK_ADD expr
+ |	expr TOK_ADD expr
 	  {
 		$$ = $1 + $3;
 	  }
-	| expr TOK_SUB expr
+ | expr TOK_SUB expr
 	  {
 		$$ = $1 - $3;
 	  }
-	| expr TOK_MUL expr
+ | expr TOK_MUL expr
 	  {
 		$$ = $1 * $3;
 	  }
-	| expr TOK_DIV expr
+ | expr TOK_DIV expr
 	  {
-		$$ = $1 / $3; 
+		$$ = $1 / $3;
 	  }
-	| TOK_NUM
-	  { 	
+ | TOK_NUM
+	  {
 		$$ = $1;
 	  }
 ;
