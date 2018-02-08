@@ -1,0 +1,11 @@
+main(){
+    float x;
+    x = 1.0;
+    print x;
+    {
+        float x;
+        x = 3.0;
+        print x;
+    };
+    print x;
+}
