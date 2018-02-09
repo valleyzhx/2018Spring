@@ -120,7 +120,7 @@ union YYSTYPE
 #line 7 "calc.y" /* yacc.c:355  */
 
         int int_val;
-	float float_val;
+        float float_val;
 
 #line 126 "calc.tab.c" /* yacc.c:355  */
 };
@@ -388,7 +388,7 @@ union yyalloc
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  5
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  27
+#define YYNRULES  25
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  39
 
@@ -437,9 +437,9 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    21,    21,    22,    26,    27,    31,    32,    35,    36,
-      37,    38,    40,    41,    42,    44,    45,    46,    48,    49,
-      50,    52,    55,    56,    60,    64,    68,    72
+       0,    21,    21,    22,    26,    27,    29,    30,    36,    37,
+      38,    40,    41,    42,    44,    45,    46,    48,    49,    50,
+      51,    55,    59,    63,    67,    71
 };
 #endif
 
@@ -489,10 +489,10 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       2,     0,     1,    22,     0,     8,     3,     0,     0,     0,
-       0,     6,     0,     0,     0,     0,     4,     0,     0,     0,
-       0,     7,     5,    11,     9,    14,    12,    17,    15,    20,
-      18,    10,    23,    13,    24,    16,    25,    19,    26
+       2,     0,     1,    25,     0,    20,     3,     0,     0,     0,
+       0,     4,     0,     0,     0,     0,     6,     0,     0,     0,
+       0,     5,     7,    10,     8,    13,    11,    16,    14,    19,
+      17,     9,    21,    12,    22,    15,    23,    18,    24
 };
 
   /* YYPGOTO[NTERM-NUM].  */
@@ -543,15 +543,15 @@ static const yytype_uint8 yyr1[] =
 {
        0,    11,    12,    12,    13,    13,    13,    13,    14,    14,
       14,    14,    14,    14,    14,    14,    14,    14,    14,    14,
-      14,    14,    15,    15,    15,    15,    15,    15
+      14,    15,    15,    15,    15,    15
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     0,     2,     2,     3,     2,     3,     1,     3,
+       0,     2,     0,     2,     2,     3,     2,     3,     3,     3,
        3,     3,     3,     3,     3,     3,     3,     3,     3,     3,
-       3,     1,     1,     3,     3,     3,     3,     1
+       1,     3,     3,     3,     3,     1
 };
 
 
@@ -1229,130 +1229,130 @@ yyreduce:
     {
         case 5:
 #line 28 "calc.y" /* yacc.c:1661  */
-    {
-			fprintf(stdout, "the value is %d\n", (yyvsp[-1].int_val));
-		}
-#line 1236 "calc.tab.c" /* yacc.c:1661  */
+    { fprintf(stdout, "the float value is %f\n", (yyvsp[-1].float_val));}
+#line 1234 "calc.tab.c" /* yacc.c:1661  */
     break;
 
   case 7:
-#line 33 "calc.y" /* yacc.c:1661  */
-    { fprintf(stdout, "the value is %f\n", (yyvsp[-1].float_val));}
+#line 31 "calc.y" /* yacc.c:1661  */
+    {
+              fprintf(stdout, "the integer value is %d\n", (yyvsp[-1].int_val));
+		 }
 #line 1242 "calc.tab.c" /* yacc.c:1661  */
     break;
 
-  case 9:
+  case 8:
 #line 36 "calc.y" /* yacc.c:1661  */
     {(yyval.float_val) = (yyvsp[-2].float_val) + (yyvsp[0].int_val);}
 #line 1248 "calc.tab.c" /* yacc.c:1661  */
     break;
 
-  case 10:
+  case 9:
 #line 37 "calc.y" /* yacc.c:1661  */
     {(yyval.float_val) = (yyvsp[-2].int_val) + (yyvsp[0].float_val);}
 #line 1254 "calc.tab.c" /* yacc.c:1661  */
     break;
 
-  case 11:
+  case 10:
 #line 38 "calc.y" /* yacc.c:1661  */
     {(yyval.float_val) = (yyvsp[-2].float_val) + (yyvsp[0].float_val);}
 #line 1260 "calc.tab.c" /* yacc.c:1661  */
     break;
 
-  case 12:
+  case 11:
 #line 40 "calc.y" /* yacc.c:1661  */
     {(yyval.float_val) = (yyvsp[-2].float_val) - (yyvsp[0].int_val);}
 #line 1266 "calc.tab.c" /* yacc.c:1661  */
     break;
 
-  case 13:
+  case 12:
 #line 41 "calc.y" /* yacc.c:1661  */
     {(yyval.float_val) = (yyvsp[-2].int_val) - (yyvsp[0].float_val);}
 #line 1272 "calc.tab.c" /* yacc.c:1661  */
     break;
 
-  case 14:
+  case 13:
 #line 42 "calc.y" /* yacc.c:1661  */
     {(yyval.float_val) = (yyvsp[-2].float_val) - (yyvsp[0].float_val);}
 #line 1278 "calc.tab.c" /* yacc.c:1661  */
     break;
 
-  case 15:
+  case 14:
 #line 44 "calc.y" /* yacc.c:1661  */
     {(yyval.float_val) = (yyvsp[-2].float_val) * (yyvsp[0].int_val);}
 #line 1284 "calc.tab.c" /* yacc.c:1661  */
     break;
 
-  case 16:
+  case 15:
 #line 45 "calc.y" /* yacc.c:1661  */
     {(yyval.float_val) = (yyvsp[-2].int_val) * (yyvsp[0].float_val);}
 #line 1290 "calc.tab.c" /* yacc.c:1661  */
     break;
 
-  case 17:
+  case 16:
 #line 46 "calc.y" /* yacc.c:1661  */
     {(yyval.float_val) = (yyvsp[-2].float_val) * (yyvsp[0].float_val);}
 #line 1296 "calc.tab.c" /* yacc.c:1661  */
     break;
 
-  case 18:
+  case 17:
 #line 48 "calc.y" /* yacc.c:1661  */
     {(yyval.float_val) = (yyvsp[-2].float_val) * 1.0 / (yyvsp[0].int_val);}
 #line 1302 "calc.tab.c" /* yacc.c:1661  */
     break;
 
-  case 19:
+  case 18:
 #line 49 "calc.y" /* yacc.c:1661  */
     {(yyval.float_val) = (yyvsp[-2].int_val) * 1.0 / (yyvsp[0].float_val);}
 #line 1308 "calc.tab.c" /* yacc.c:1661  */
     break;
 
-  case 20:
+  case 19:
 #line 50 "calc.y" /* yacc.c:1661  */
     {(yyval.float_val) = (yyvsp[-2].float_val) * 1.0 / (yyvsp[0].float_val);}
 #line 1314 "calc.tab.c" /* yacc.c:1661  */
     break;
 
-  case 21:
-#line 52 "calc.y" /* yacc.c:1661  */
+  case 20:
+#line 51 "calc.y" /* yacc.c:1661  */
     {(yyval.float_val) = (yyvsp[0].float_val);}
 #line 1320 "calc.tab.c" /* yacc.c:1661  */
     break;
 
-  case 23:
-#line 57 "calc.y" /* yacc.c:1661  */
+  case 21:
+#line 56 "calc.y" /* yacc.c:1661  */
     {
 		(yyval.int_val) = (yyvsp[-2].int_val) + (yyvsp[0].int_val);
 	  }
 #line 1328 "calc.tab.c" /* yacc.c:1661  */
     break;
 
-  case 24:
-#line 61 "calc.y" /* yacc.c:1661  */
+  case 22:
+#line 60 "calc.y" /* yacc.c:1661  */
     {
 		(yyval.int_val) = (yyvsp[-2].int_val) - (yyvsp[0].int_val);
 	  }
 #line 1336 "calc.tab.c" /* yacc.c:1661  */
     break;
 
-  case 25:
-#line 65 "calc.y" /* yacc.c:1661  */
+  case 23:
+#line 64 "calc.y" /* yacc.c:1661  */
     {
 		(yyval.int_val) = (yyvsp[-2].int_val) * (yyvsp[0].int_val);
 	  }
 #line 1344 "calc.tab.c" /* yacc.c:1661  */
     break;
 
-  case 26:
-#line 69 "calc.y" /* yacc.c:1661  */
+  case 24:
+#line 68 "calc.y" /* yacc.c:1661  */
     {
 		(yyval.int_val) = (yyvsp[-2].int_val) / (yyvsp[0].int_val); 
 	  }
 #line 1352 "calc.tab.c" /* yacc.c:1661  */
     break;
 
-  case 27:
-#line 73 "calc.y" /* yacc.c:1661  */
+  case 25:
+#line 72 "calc.y" /* yacc.c:1661  */
     { 	
 		(yyval.int_val) = (yyvsp[0].int_val);
 	  }
@@ -1588,7 +1588,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 79 "calc.y" /* yacc.c:1906  */
+#line 78 "calc.y" /* yacc.c:1906  */
 
 
 int yyerror(char *s)

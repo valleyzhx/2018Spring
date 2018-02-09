@@ -6,7 +6,7 @@
 
 %union{
         int int_val;
-	float float_val;
+        float float_val;
 }
 
 /*%type <int_val> expr TOK_NUM*/
@@ -23,17 +23,17 @@ stmt:
 ;
 
 expr_stmt:
-	   expr TOK_SEMICOLON
-	   | TOK_PRINTLN expr TOK_SEMICOLON 
-		{
-			fprintf(stdout, "the value is %d\n", $2);
-		}
-	   | expr_float TOK_SEMICOLON
-	   | TOK_PRINTLN expr_float TOK_SEMICOLON
-		{ fprintf(stdout, "the value is %f\n", $2);} 
+        expr_float TOK_SEMICOLON
+        | TOK_PRINTLN expr_float TOK_SEMICOLON
+            { fprintf(stdout, "the float value is %f\n", $2);}
+	    |expr TOK_SEMICOLON
+	    | TOK_PRINTLN expr TOK_SEMICOLON
+		 {
+              fprintf(stdout, "the integer value is %d\n", $2);
+		 }
 ;
-expr_float: TOK_FLOAT
-|expr_float TOK_ADD expr           {$$ = $1 + $3;}
+expr_float:
+  expr_float TOK_ADD expr           {$$ = $1 + $3;}
 | expr TOK_ADD expr_float           {$$ = $1 + $3;}
 | expr_float TOK_ADD expr_float     {$$ = $1 + $3;}
 
@@ -48,12 +48,11 @@ expr_float: TOK_FLOAT
 | expr_float TOK_DIV expr           {$$ = $1 * 1.0 / $3;}
 | expr TOK_DIV expr_float           {$$ = $1 * 1.0 / $3;}
 | expr_float TOK_DIV expr_float     {$$ = $1 * 1.0 / $3;}
-
-| TOK_FLOAT{$$ = $1;}
+| TOK_FLOAT                         {$$ = $1;}
 ;
 
-expr: TOK_NUM
-|	expr TOK_ADD expr
+expr:
+	expr TOK_ADD expr
 	  {
 		$$ = $1 + $3;
 	  }

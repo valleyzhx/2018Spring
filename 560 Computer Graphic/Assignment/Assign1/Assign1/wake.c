@@ -17,96 +17,81 @@ Point _tempEnd;
 int _isStart = 0;
 
 #pragma mark- mid-point draw line
+void swap(int *a,int *b){
+    int t = *b;
+    *b = *a;
+    *a = t;
+}
+
+void setPixel(int x, int y, float distance){
+    float alpha = (16-round(fabs(distance)))/16.0;
+    glColor4f(0.0, 1.0, 0.0,alpha);
+    glVertex2i(x,y);
+
+}
 void midpointBresenham(Point p1,Point p2)    //中点Bresenham算法画线
 {
-    glColor3f(0.0, 1.0, 0.0);
-
-    int x0 = p1.x;
-    int y0 = p1.y;
-    int x1 = p2.x;
-    int y1 = p2.y;
+    int x1 = p1.x;
+    int y1 = p1.y;
+    int x2 = p2.x;
+    int y2 = p2.y;
     
-    int dx,dy,d,UpIncre,DownIncre,x,y;
-    if(x0>x1){
-        x=x1;x1=x0;x0=x;
-        y=y1;y1=y0;y0=y;
+    int dx,dy,d,x,y;
+    
+    int flip = 0;
+    //if slope is greater than one
+    if( abs(y2-y1) > abs(x2-x1) ) {
+        swap(&x1,&y1);
+        swap(&x2,&y2);
+        flip = 1;
     }
-    x = x0;y = y0;
-    dx = x1-x0;
-    dy = y1-y0;
-    if(dy>0&&dy<=dx){    //0<k<=1
-        d = dx-2*dy;
-        UpIncre = 2*dx-2*dy;
-        DownIncre = -2*dy;
-        while(x<=x1){
-            glBegin(GL_POINTS);
-            glVertex2i(x,y);
-            glEnd();
-            x++;
-            if(d<0){
-                y++;
-                d+=UpIncre;
-            }
-            else
-                d+=DownIncre;
-        }
+    //if from left to right
+    if(x2-x1<0) {
+        swap(&x1,&x2);
+        swap(&y1,&y2);
     }
-    else if((dy>=(-dx))&&dy<=0) //-1<=k<=0
-    {
-        d=dx-2*dy;
-        UpIncre=-2*dy;
-        DownIncre=-2*dx-2*dy;
-        while(x<=x1)
-        {
-            glBegin(GL_POINTS);
-            glVertex2i(x,y);
-            glEnd();
-            x++;
-            if(d>0)
-            {
-                y--;
-                d+=DownIncre;
-            }
-            else d+=UpIncre;
-        }
-    }
-    else if(dy<(-dx)) //k<-1
-    {
-        d=-dy-2*dx;
-        UpIncre=2*dx+2*dy;
-        DownIncre=2*dx;
-        while(y>=y1)
-        {
-            glBegin(GL_POINTS);
-            glVertex2i(x,y);
-            glEnd();
-            y--;
-            if(d<0)
-            {
-                x++;
-                d-=UpIncre;
-            }
-            else d-=DownIncre;
-        }
+    dx = x2-x1;
+    dy = y2-y1;
+    int ystep = 1;
+    if(dy < 0) {
+        dy = -dy;
+        ystep = -1;
     }
     
-    else //k>1和k不存在
-    {
-        d=dy-2*dx;
-        UpIncre=2*dy-2*dx;
-        DownIncre=-2*dx;
-        while(y<=y1)
-        {
-            glBegin(GL_POINTS);
-            glVertex2i(x,y);
-            glEnd();
-            y++;
-            if(d<0)
-            {
-                x++;
-                d+=UpIncre;
-            }
-            else d+=DownIncre;
+    d = 2*dy-dx;
+    int incE = 2*dy;
+    int incNE = 2*(dy-dx);
+    // antialiasing
+    int two_vdx = 0;
+    double L = 2*sqrt(dx*dx+dy*dy);
+    
+    x = x1;
+    y = y1;
+    
+    while(x<=x2){
+        glBegin(GL_POINTS);
+        //
+        int pixX = x;
+        int pixY = y;
+        if (flip) {
+            pixX = y;
+            pixY = x;
+        }
+        setPixel(pixX, pixY, two_vdx/L);
+        
+        glEnd();
+        x++;
+        if(d<=0){// E
+            d+=incE;
+            two_vdx = d+dx;
+            setPixel(pixX, pixY+1, (2*dx-two_vdx)/L);
+            setPixel(pixX, pixY-1, (2*dx+two_vdx)/L);
+        }else{ // NE
+            d+=incNE;
+            y+=ystep;
+            two_vdx = d-dx;
+            setPixel(pixX, pixY+2, (2*dx-two_vdx)/L);
+            setPixel(pixX, pixY, (2*dx+two_vdx)/L);
         }
     }
 }

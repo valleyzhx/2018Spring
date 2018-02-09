@@ -64,7 +64,7 @@ union YYSTYPE
 #line 7 "calc.y" /* yacc.c:1915  */
 
         int int_val;
-	float float_val;
+        float float_val;
 
 #line 70 "calc.tab.h" /* yacc.c:1915  */
 };
