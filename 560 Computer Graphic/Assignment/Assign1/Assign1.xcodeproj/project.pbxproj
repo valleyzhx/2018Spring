@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F08FEC91202D523E00EE6C60 /* wake.c in Sources */ = {isa = PBXBuildFile; fileRef = F05C0118201BBEE7004A0FA8 /* wake.c */; };
+		F08FEC93202E4ABA00EE6C60 /* coordinate.c in Sources */ = {isa = PBXBuildFile; fileRef = F05C011F201FE98E004A0FA8 /* coordinate.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,7 +25,7 @@
 /* Begin PBXFileReference section */
 		F05C0115201BBEE7004A0FA8 /* Assign1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Assign1; sourceTree = BUILT_PRODUCTS_DIR; };
 		F05C0118201BBEE7004A0FA8 /* wake.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = wake.c; sourceTree = "<group>"; };
-		F05C011F201FE98E004A0FA8 /* drawing.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = drawing.c; sourceTree = "<group>"; };
+		F05C011F201FE98E004A0FA8 /* coordinate.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = coordinate.c; sourceTree = "<group>"; };
 		F08FEC8B2029E64500EE6C60 /* circle.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = circle.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -60,7 +60,7 @@
 			isa = PBXGroup;
 			children = (
 				F05C0118201BBEE7004A0FA8 /* wake.c */,
-				F05C011F201FE98E004A0FA8 /* drawing.c */,
+				F05C011F201FE98E004A0FA8 /* coordinate.c */,
 				F08FEC8B2029E64500EE6C60 /* circle.c */,
 			);
 			path = Assign1;
@@ -123,7 +123,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F08FEC91202D523E00EE6C60 /* wake.c in Sources */,
+				F08FEC93202E4ABA00EE6C60 /* coordinate.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

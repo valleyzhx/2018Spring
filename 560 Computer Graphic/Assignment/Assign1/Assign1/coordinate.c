@@ -17,7 +17,11 @@ Point _tempEnd;
 int _isStart = 0;
 
 #pragma mark- mid-point draw line
-
+void swap(int *a,int *b){
+    int t = *b;
+    *b = *a;
+    *a = t;
+}
 void setPixel(int x, int y, float distance){
     float alpha = (16-round(fabs(distance)))/16.0;
     glColor4f(0.0, 1.0, 0.0,alpha);
@@ -142,6 +146,46 @@ void display(void)
 {
     glClear(GL_CURRENT_BIT);
     
+    Point p1 = {200,200};
+    Point p2 = {200,80};
+    midpointBresenham(p1, p2);
+    p2.x = 320;
+    p2.y = 200;
+    midpointBresenham(p1, p2);
+    p2.x = 100;
+    p2.y = 235;
+    midpointBresenham(p1, p2);
+    // S
+    p1.x = 180;
+    p1.y = 130;
+    p2.x = 150;
+    p2.y = 140;
+    midpointBresenham(p1, p2);
+    p1.x = 150;
+    p1.y = 165;
+    midpointBresenham(p2, p1);
+    p2.x = 180;
+    p2.y = 155;
+    midpointBresenham(p1, p2);
+    p1.x = 180;
+    p1.y = 180;
+    midpointBresenham(p2, p1);
+    p2.x = 150;
+    p2.y = 190;
+    midpointBresenham(p1, p2);
+    //C
+    p1.x = 135;
+    p1.y = 145;
+    p2.x = 105;
+    p2.y = 155;
+    midpointBresenham(p1, p2);
+    p1.x = 105;
+    p1.y = 205;
+    midpointBresenham(p1, p2);
+    p2.x = 135;
+    p2.y = 195;
+    midpointBresenham(p1, p2);
+
     glFlush();
 }
 
