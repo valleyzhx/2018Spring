@@ -18,14 +18,15 @@ digit	([0-9])
 		}
 "main()" {return(TOK_MAIN);}
 
-"{" { return(TOK_START);}
-"}" { return(TOK_END);}
+"{" { newVariable("start",0.0,VarTypeStart); return(TOK_START);}
+"}" { releaseVariables(); return(TOK_END);}
 ";"	{	return(TOK_SEMICOLON);	}
 "(" {    return(TOK_PAREN_START);    }
 ")" {    return(TOK_PAREN_END);    }
 
-[a-z]+([A-Z]*{digit}*)* {return(TOK_ID);}
-
+[a-z]+([A-Z]*{digit}*)* {
+        yylval.string_val = yytext;
+        return(TOK_ID);}
 
 "=" {   return(TOK_EQUAL);  }
 
