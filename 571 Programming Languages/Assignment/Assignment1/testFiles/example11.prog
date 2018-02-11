@@ -1,0 +1,19 @@
+main(){
+    float x;
+    float y;
+    float z;
+    x = 1.0;
+    {
+        float x;
+        x = 5.0;
+        y = x - 3.0;
+        print y;
+        {
+            float y;
+            y = 6.0 - x;
+            printf y;
+        };
+    };
+    z = y - x;
+    print z;
+}
