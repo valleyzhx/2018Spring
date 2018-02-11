@@ -1,1 +1,8 @@
+# exe
 calc
+
+# intermedia file
+lex.yy.c
+prog.output
+prog.tab.c
+prog.tab.h

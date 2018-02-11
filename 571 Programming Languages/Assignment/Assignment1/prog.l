@@ -7,6 +7,7 @@ digit	([0-9])
 
 %%
 
+"main()"        { return(TOK_MAIN); }
 "println"       {   return(TOK_PRINTLN);  }
 
 {digit}+\.{digit}+ {
