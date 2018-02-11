@@ -9,10 +9,7 @@ digit	([0-9])
 
 "println"       {       return(TOK_PRINTLN);}
 
-{digit}+\.{digit}+ {
-		   scanf(yytext, "%f", &(yylval.float_val));
-		   return TOK_FLOAT;
-			}
+
 {digit}+	{
 		sscanf(yytext, "%d", &(yylval.int_val));
 		return TOK_NUM;
