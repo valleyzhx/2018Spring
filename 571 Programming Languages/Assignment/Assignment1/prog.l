@@ -1,6 +1,7 @@
+%option noyywrap nodefault yylineno
 %{
 #include <stdio.h>
-#include "calc.tab.h"
+#include "prog.tab.h"
 %}
 
 digit	([0-9])

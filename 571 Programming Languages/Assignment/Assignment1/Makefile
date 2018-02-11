@@ -3,8 +3,14 @@ all:
 	bison -dv calc.y
 	gcc -o calc calc.tab.c lex.yy.c –lfl
 
-test: prog.l prog.y
-	flex –l prog.l # generate lex.yy.c
-	bison -dv prog.y # generate
+test: prog.l prog.y Variables.c Variables.h
+	# generate lex.yy.c
+	# -l, --lex-compat        maximal compatibility with original lex
+	flex -l prog.l
+	# generate prog.tab.c prog.tab.h prog.output, which could be helpful
+	bison -dv prog.y
 	# -ll for MacOS, -lfl for Ubuntu
-	gcc calc.tab.c lex.yy.c -o calc –ll
+	gcc Variables.c prog.tab.c lex.yy.c -o prog -ll
+
+clean:
+	rm *.tab.c *.tab.h *.yy.c *.output

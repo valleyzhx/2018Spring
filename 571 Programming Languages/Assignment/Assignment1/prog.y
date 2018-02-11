@@ -11,8 +11,10 @@
 }
 
 /*%type <int_val> expr TOK_NUM*/
+/*
 %type <int_val> expr TOK_NUM
 %type <float_val> expr_float TOK_FLOAT
+*/
 
 %left TOK_ADD TOK_SUB
 %left TOK_MUL TOK_DIV
@@ -29,8 +31,14 @@ Prog: /* nothing */
  ;
 
 Stmts: /* nothing */
+ | TOK_NUM
  ;
 
+
+
+%%
+
+#if 0
 /* below is the calc code */
 stmt: /* could be empty */
  | stmt expr_stmt /* which means could be a lot of expr_stmt */
@@ -88,10 +96,10 @@ expr: TOK_NUM
 		$$ = $1;
 	  }
 ;
+#endif
 
-
-%%
-
+#if 0
+# mov them to Varibles.c file
 int yyerror(char *s)
 {
 	printf("syntax error\n");
@@ -103,3 +111,4 @@ int main()
    yyparse();
    return 0;
 }
+#endif
