@@ -25,6 +25,8 @@ typedef struct {
 
 Variable newVariable(char *name, float value, VarType type);
 Variable updateVariable(char *name, float value);
+float getValueOfName(char *name);
+
 void releaseVariables(void);
 
 #endif /* Variables_h */
