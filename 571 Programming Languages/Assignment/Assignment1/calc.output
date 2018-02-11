@@ -1,0 +1,383 @@
+Terminals unused in grammar
+
+   token
+   TOK_PAREN_START
+   TOK_PAREN_END
+
+
+Grammar
+
+    0 $accept: prog $end
+
+    1 prog: %empty
+    2     | TOK_MAIN TOK_START stmts TOK_END
+
+    3 stmts: %empty
+    4      | stmt TOK_SEMICOLON stmts
+
+    5 stmt: %empty
+    6     | TOK_FLOAT name
+    7     | TOK_ID TOK_EQUAL expr
+    8     | TOK_PRINT name
+    9     | TOK_START stmts TOK_END
+
+   10 name: %empty
+   11     | TOK_ID
+
+   12 expr: %empty
+   13     | TOK_NUM
+   14     | TOK_ID
+   15     | expr TOK_ADD expr
+   16     | expr TOK_SUB expr
+   17     | expr TOK_MUL expr
+   18     | expr TOK_DIV expr
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+TOK_SEMICOLON (258) 4
+TOK_ADD (259) 15
+TOK_SUB (260) 16
+TOK_MUL (261) 17
+TOK_DIV (262) 18
+TOK_NUM (263) 13
+TOK_PRINT (264) 8
+token (265)
+TOK_START (266) 2 9
+TOK_END (267) 2 9
+TOK_MAIN (268) 2
+TOK_FLOAT (269) 6
+TOK_EQUAL (270) 7
+TOK_ID (271) 7 11 14
+TOK_PAREN_START (272)
+TOK_PAREN_END (273)
+
+
+Nonterminals, with rules where they appear
+
+$accept (19)
+    on left: 0
+prog (20)
+    on left: 1 2, on right: 0
+stmts (21)
+    on left: 3 4, on right: 2 4 9
+stmt (22)
+    on left: 5 6 7 8 9, on right: 4
+name (23)
+    on left: 10 11, on right: 6 8
+expr (24)
+    on left: 12 13 14 15 16 17 18, on right: 7 15 16 17 18
+
+
+State 0
+
+    0 $accept: . prog $end
+
+    TOK_MAIN  shift, and go to state 1
+
+    $default  reduce using rule 1 (prog)
+
+    prog  go to state 2
+
+
+State 1
+
+    2 prog: TOK_MAIN . TOK_START stmts TOK_END
+
+    TOK_START  shift, and go to state 3
+
+
+State 2
+
+    0 $accept: prog . $end
+
+    $end  shift, and go to state 4
+
+
+State 3
+
+    2 prog: TOK_MAIN TOK_START . stmts TOK_END
+
+    TOK_PRINT  shift, and go to state 5
+    TOK_START  shift, and go to state 6
+    TOK_FLOAT  shift, and go to state 7
+    TOK_ID     shift, and go to state 8
+
+    TOK_SEMICOLON  reduce using rule 5 (stmt)
+    $default       reduce using rule 3 (stmts)
+
+    stmts  go to state 9
+    stmt   go to state 10
+
+
+State 4
+
+    0 $accept: prog $end .
+
+    $default  accept
+
+
+State 5
+
+    8 stmt: TOK_PRINT . name
+
+    TOK_ID  shift, and go to state 11
+
+    $default  reduce using rule 10 (name)
+
+    name  go to state 12
+
+
+State 6
+
+    9 stmt: TOK_START . stmts TOK_END
+
+    TOK_PRINT  shift, and go to state 5
+    TOK_START  shift, and go to state 6
+    TOK_FLOAT  shift, and go to state 7
+    TOK_ID     shift, and go to state 8
+
+    TOK_SEMICOLON  reduce using rule 5 (stmt)
+    $default       reduce using rule 3 (stmts)
+
+    stmts  go to state 13
+    stmt   go to state 10
+
+
+State 7
+
+    6 stmt: TOK_FLOAT . name
+
+    TOK_ID  shift, and go to state 11
+
+    $default  reduce using rule 10 (name)
+
+    name  go to state 14
+
+
+State 8
+
+    7 stmt: TOK_ID . TOK_EQUAL expr
+
+    TOK_EQUAL  shift, and go to state 15
+
+
+State 9
+
+    2 prog: TOK_MAIN TOK_START stmts . TOK_END
+
+    TOK_END  shift, and go to state 16
+
+
+State 10
+
+    4 stmts: stmt . TOK_SEMICOLON stmts
+
+    TOK_SEMICOLON  shift, and go to state 17
+
+
+State 11
+
+   11 name: TOK_ID .
+
+    $default  reduce using rule 11 (name)
+
+
+State 12
+
+    8 stmt: TOK_PRINT name .
+
+    $default  reduce using rule 8 (stmt)
+
+
+State 13
+
+    9 stmt: TOK_START stmts . TOK_END
+
+    TOK_END  shift, and go to state 18
+
+
+State 14
+
+    6 stmt: TOK_FLOAT name .
+
+    $default  reduce using rule 6 (stmt)
+
+
+State 15
+
+    7 stmt: TOK_ID TOK_EQUAL . expr
+
+    TOK_NUM  shift, and go to state 19
+    TOK_ID   shift, and go to state 20
+
+    $default  reduce using rule 12 (expr)
+
+    expr  go to state 21
+
+
+State 16
+
+    2 prog: TOK_MAIN TOK_START stmts TOK_END .
+
+    $default  reduce using rule 2 (prog)
+
+
+State 17
+
+    4 stmts: stmt TOK_SEMICOLON . stmts
+
+    TOK_PRINT  shift, and go to state 5
+    TOK_START  shift, and go to state 6
+    TOK_FLOAT  shift, and go to state 7
+    TOK_ID     shift, and go to state 8
+
+    TOK_SEMICOLON  reduce using rule 5 (stmt)
+    $default       reduce using rule 3 (stmts)
+
+    stmts  go to state 22
+    stmt   go to state 10
+
+
+State 18
+
+    9 stmt: TOK_START stmts TOK_END .
+
+    $default  reduce using rule 9 (stmt)
+
+
+State 19
+
+   13 expr: TOK_NUM .
+
+    $default  reduce using rule 13 (expr)
+
+
+State 20
+
+   14 expr: TOK_ID .
+
+    $default  reduce using rule 14 (expr)
+
+
+State 21
+
+    7 stmt: TOK_ID TOK_EQUAL expr .
+   15 expr: expr . TOK_ADD expr
+   16     | expr . TOK_SUB expr
+   17     | expr . TOK_MUL expr
+   18     | expr . TOK_DIV expr
+
+    TOK_ADD  shift, and go to state 23
+    TOK_SUB  shift, and go to state 24
+    TOK_MUL  shift, and go to state 25
+    TOK_DIV  shift, and go to state 26
+
+    $default  reduce using rule 7 (stmt)
+
+
+State 22
+
+    4 stmts: stmt TOK_SEMICOLON stmts .
+
+    $default  reduce using rule 4 (stmts)
+
+
+State 23
+
+   15 expr: expr TOK_ADD . expr
+
+    TOK_NUM  shift, and go to state 19
+    TOK_ID   shift, and go to state 20
+
+    $default  reduce using rule 12 (expr)
+
+    expr  go to state 27
+
+
+State 24
+
+   16 expr: expr TOK_SUB . expr
+
+    TOK_NUM  shift, and go to state 19
+    TOK_ID   shift, and go to state 20
+
+    $default  reduce using rule 12 (expr)
+
+    expr  go to state 28
+
+
+State 25
+
+   17 expr: expr TOK_MUL . expr
+
+    TOK_NUM  shift, and go to state 19
+    TOK_ID   shift, and go to state 20
+
+    $default  reduce using rule 12 (expr)
+
+    expr  go to state 29
+
+
+State 26
+
+   18 expr: expr TOK_DIV . expr
+
+    TOK_NUM  shift, and go to state 19
+    TOK_ID   shift, and go to state 20
+
+    $default  reduce using rule 12 (expr)
+
+    expr  go to state 30
+
+
+State 27
+
+   15 expr: expr . TOK_ADD expr
+   15     | expr TOK_ADD expr .
+   16     | expr . TOK_SUB expr
+   17     | expr . TOK_MUL expr
+   18     | expr . TOK_DIV expr
+
+    TOK_MUL  shift, and go to state 25
+    TOK_DIV  shift, and go to state 26
+
+    $default  reduce using rule 15 (expr)
+
+
+State 28
+
+   15 expr: expr . TOK_ADD expr
+   16     | expr . TOK_SUB expr
+   16     | expr TOK_SUB expr .
+   17     | expr . TOK_MUL expr
+   18     | expr . TOK_DIV expr
+
+    TOK_MUL  shift, and go to state 25
+    TOK_DIV  shift, and go to state 26
+
+    $default  reduce using rule 16 (expr)
+
+
+State 29
+
+   15 expr: expr . TOK_ADD expr
+   16     | expr . TOK_SUB expr
+   17     | expr . TOK_MUL expr
+   17     | expr TOK_MUL expr .
+   18     | expr . TOK_DIV expr
+
+    $default  reduce using rule 17 (expr)
+
+
+State 30
+
+   15 expr: expr . TOK_ADD expr
+   16     | expr . TOK_SUB expr
+   17     | expr . TOK_MUL expr
+   18     | expr . TOK_DIV expr
+   18     | expr TOK_DIV expr .
+
+    $default  reduce using rule 18 (expr)

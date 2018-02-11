@@ -5,14 +5,17 @@
 %}
 
 %token TOK_SEMICOLON TOK_ADD TOK_SUB TOK_MUL TOK_DIV TOK_NUM TOK_PRINT
- token TOK_START TOK_END TOK_MAIN TOK_FLOAT TOK_ID TOK_EQUAL
+ token TOK_START TOK_END TOK_MAIN TOK_FLOAT TOK_EQUAL TOK_ID
        TOK_PAREN_START TOK_PAREN_END
 %union{
-        Variable var_val;
+        float float_val;
+        char* string_val;
 }
 
 /*%type <int_val> expr TOK_NUM*/
 %type <float_val> expr TOK_NUM
+%type <string_val> name TOK_ID
+
 
 %left TOK_ADD TOK_SUB
 %left TOK_MUL TOK_DIV
@@ -26,16 +29,21 @@ stmts:
     | stmt TOK_SEMICOLON stmts
 ;
 stmt:
-    | TOK_FLOAT TOK_ID { newVariable("new",0);}
-    | TOK_ID TOK_EQUAL expr
-    | TOK_PRINT TOK_ID  {fprintf(stdout, "the value is %f\n", $2);}
+    | TOK_FLOAT name { newVariable($2,0.0,VarTypeDefault);}
+    | name TOK_EQUAL expr {updateVariable($1,$3);}
+    | TOK_PRINT name  {
+        float value = getValueOfName($2);
+        fprintf(stdout, "the %s is %.2f\n", $2, value);}
     | TOK_START stmts TOK_END
 ;
 
+name:
+    |TOK_ID {$$ = $1;}
+;
+
 expr:
-    |TOK_ID { $$ = $1; }
-    |TOK_PAREN_START TOK_DIV TOK_ID TOK_PAREN_END {$$ = -$1; }
     |TOK_NUM { $$ = $1; }
+    |TOK_ID { $$ = getValueOfName($1); }
 	|expr TOK_ADD expr
 	  {
 		$$ = $1 + $3;
@@ -54,7 +62,6 @@ expr:
 	  }
 
 ;
-
 
 %%
 

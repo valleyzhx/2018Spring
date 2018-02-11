@@ -19,19 +19,18 @@ Variable newVariable(char *name, float value, VarType type){
     var.type = type;
     _varArray[_varCount++] = var;
     
-    printf("newVar: %s\nvarCount:%d\n",name,_varCount);
+    printf("new: %s = %f count:%d\n",name,value,_varCount);
 
     
     return var;
 }
 
 float getValueOfName(char *name){
-    printf("getValueOfName: %s\nvarCount:%d\n",name,_varCount);
     for (int i=_varCount-1; i>=0; i--) {
         Variable var = _varArray[i];
-        printf("name:%s\n",var.name);
+        
         if(strcmp(var.name,name) == 0){
-            var.name = name;
+            printf("get:%s = %f\n",var.name,var.value);
             return var.value;
         }
     }
@@ -41,11 +40,13 @@ float getValueOfName(char *name){
 
 Variable updateVariable(char *name, float value){
     Variable theVar;
+    printf("looking for => %s\n",name);
     for (int i=_varCount-1; i>=0; i--) {
         Variable var = _varArray[i];
         if(strcmp(var.name,name) == 0){
-            var.name = name;
             var.value = value;
+            printf("update:%s = %f\n",var.name,var.value);
+
             _varArray[i] = var;
             theVar = var;
             break;
