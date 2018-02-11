@@ -7,6 +7,7 @@
 //
 
 #include "Variables.h"
+#include <string.h>
 
 static Variable _varArray[100];
 static int _varCount = 0;
@@ -17,6 +18,20 @@ Variable newVariable(char *name, float value, VarType type){
     var.value = value;
     var.type = type;
     return var;
+}
+
+Variable updateVariable(char *name, float value){
+    Variable theVar;
+    for (int i=_varCount-1; i>=0; i--) {
+        Variable var = _varArray[i];
+        if(strcmp(var.name,name) == 0){
+            var.name = name;
+            var.value = value;
+            theVar = var;
+            break;
+        }
+    }
+    return theVar;
 }
 
 void releaseVariables(void){

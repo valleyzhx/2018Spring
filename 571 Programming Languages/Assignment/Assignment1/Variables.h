@@ -24,7 +24,7 @@ typedef struct {
 } Variable;
 
 Variable newVariable(char *name, float value, VarType type);
-
+Variable updateVariable(char *name, float value);
 void releaseVariables(void);
 
 #endif /* Variables_h */
