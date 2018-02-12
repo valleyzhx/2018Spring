@@ -1,7 +1,8 @@
 %{
 #include <stdio.h>
 #include "Variables.h"
-
+int yyerror(char *s);
+int yylex(void);
 %}
 
 %token TOK_SEMICOLON TOK_ADD TOK_SUB TOK_MUL TOK_DIV TOK_NUM TOK_PRINT
@@ -33,7 +34,7 @@ stmt:
     | name TOK_EQUAL expr {updateVariable($1,$3);}
     | TOK_PRINT name  {
         float value = getValueOfName($2);
-        fprintf(stdout, "%s = %.2f\n", $2, value);}
+        fprintf(stdout, "%.2f\n",value);}
     | TOK_START stmts TOK_END
 ;
 name:
@@ -59,13 +60,18 @@ expr:
 	  {
 		$$ = $1 * 1.0/ $3;
 	  }
+    |TOK_PAREN_START TOK_SUB expr TOK_PAREN_END
+        {
+            $$ = 0.0 - $3;
+        }
 ;
 
 %%
 
 int yyerror(char *s)
 {
-	printf("syntax error\n");
+    extern int yylineno;
+    printf("%s line:%d\n",s,yylineno);
 	return 0;
 }
 
