@@ -24,16 +24,16 @@ digit	([0-9])
 "(" {    return(TOK_PAREN_START);    }
 ")" {    return(TOK_PAREN_END);    }
 
-[a-z]+([A-Z]*{digit}*)* {
-        yylval.string_val = yytext;
-        return(TOK_ID);}
-
 "=" {   return(TOK_EQUAL);  }
 
 "+"	{	return(TOK_ADD);	}
 "-"	{	return(TOK_SUB);	}
 "*"	{	return(TOK_MUL);	}
 "/"	{	return(TOK_DIV);	}
+
+[a-z][a-zA-Z0-9]* {
+    yylval.string_val = strdup(yytext);
+    return(TOK_ID);}
 
 [ \n] num_lines++;
 . {printf("Invalid character '%c', ignored\n",
