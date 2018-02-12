@@ -33,17 +33,16 @@ stmt:
     | name TOK_EQUAL expr {updateVariable($1,$3);}
     | TOK_PRINT name  {
         float value = getValueOfName($2);
-        fprintf(stdout, "the %s is %.2f\n", $2, value);}
+        fprintf(stdout, "%s = %.2f\n", $2, value);}
     | TOK_START stmts TOK_END
 ;
-
 name:
-    |TOK_ID {$$ = $1;}
+    TOK_ID {$$ = $1;}
 ;
 
 expr:
-    |TOK_NUM { $$ = $1; }
-    |TOK_ID { $$ = getValueOfName($1); }
+     TOK_NUM { $$ = $1;}
+    |name { $$ = getValueOfName($1); }
 	|expr TOK_ADD expr
 	  {
 		$$ = $1 + $3;
@@ -60,7 +59,6 @@ expr:
 	  {
 		$$ = $1 * 1.0/ $3;
 	  }
-
 ;
 
 %%
