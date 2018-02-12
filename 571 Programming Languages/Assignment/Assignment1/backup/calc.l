@@ -26,7 +26,7 @@ digit	([0-9])
 "/"	{	return(TOK_DIV);	}
 
 [ \t] /* eat up the white space */
-\n  { // yylineno is build in flex }
+\n  { /* yylineno is build in flex */ }
 
 . { /* catch up all pattern */
     printf("Invalid character '%c', ignored\n",

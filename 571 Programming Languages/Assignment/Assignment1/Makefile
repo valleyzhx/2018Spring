@@ -11,7 +11,7 @@ all:
 test: prog.l prog.y Variables.c Variables.h
 	flex -l prog.l
 	bison -dv prog.y
-	gcc Variables.c prog.tab.c lex.yy.c -o prog -ll
+	gcc Variables.c prog.tab.c lex.yy.c -o $@ -ll
 
 clean:
-	rm *.tab.c *.tab.h *.yy.c *.output
+	rm *.tab.c *.tab.h *.yy.c *.output test prog

@@ -15,3 +15,7 @@ leave syntax check to flex .l file
 - error report, left it all
 - scope problem
 - don't understand what's .output for??
+- where is yylineno defined ??
+
+# log
+still get some warning but doesn't matter now. Ready to go, finish the book first

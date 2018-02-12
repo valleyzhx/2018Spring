@@ -6,7 +6,11 @@
 //  Copyright © 2018年 Xiang. All rights reserved.
 //
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
 #include "Variables.h"
+#include "prog.tab.h"
 
 static Variable _varArray[100];
 static int _varCount = 0;

@@ -9,9 +9,13 @@
 	float float_val;
 }
 
-/*%type <int_val> expr TOK_NUM*/
+/*
 %type <int_val> expr TOK_NUM
 %type <float_val> expr_float TOK_FLOAT
+*/
+
+%type <int_val> TOK_NUM
+%type <float_val> TOK_FLOAT
 
 %left TOK_ADD TOK_SUB
 %left TOK_MUL TOK_DIV
@@ -32,7 +36,7 @@ expr_stmt: expr TOK_SEMICOLON   /* do nothing */
 		{ fprintf(stdout, "the value is %f\n", $2);}
 ;
 
-expr_float: TOK_FLOAT
+expr_float: TOK_FLOAT               {$$ = $1;}
 | expr_float TOK_ADD expr           {$$ = $1 + $3;}
 | expr TOK_ADD expr_float           {$$ = $1 + $3;}
 | expr_float TOK_ADD expr_float     {$$ = $1 + $3;}
@@ -49,10 +53,9 @@ expr_float: TOK_FLOAT
 | expr TOK_DIV expr_float           {$$ = $1 * 1.0 / $3;}
 | expr_float TOK_DIV expr_float     {$$ = $1 * 1.0 / $3;}
 
-| TOK_FLOAT{$$ = $1;}
 ;
 
-expr: TOK_NUM
+expr: TOK_NUM { $$=$1; }
  |	expr TOK_ADD expr
 	  {
 		$$ = $1 + $3;
@@ -68,10 +71,6 @@ expr: TOK_NUM
  | expr TOK_DIV expr
 	  {
 		$$ = $1 / $3;
-	  }
- | TOK_NUM
-	  {
-		$$ = $1;
 	  }
 ;
 

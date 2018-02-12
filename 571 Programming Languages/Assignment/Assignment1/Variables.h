@@ -11,6 +11,11 @@
 
 #include <stdio.h>
 
+/* interface to the lexer */
+extern int yylineno; /* from lexer */
+void yyerror(char* s, ...);
+
+/* data struct */
 typedef enum {
     VarTypeDefault = 0,
     VarTypeStart,

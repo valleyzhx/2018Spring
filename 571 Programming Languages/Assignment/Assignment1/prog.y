@@ -6,15 +6,18 @@
 %token TOK_MAIN TOK_SEMICOLON TOK_ADD TOK_SUB TOK_MUL TOK_DIV TOK_NUM TOK_PRINTLN TOK_FLOAT
 
 %union{
-        int int_val;
-	float float_val;
+    int int_val;
+    float float_val;
 }
 
-/*%type <int_val> expr TOK_NUM*/
+/* declare tokens */
 /*
 %type <int_val> expr TOK_NUM
 %type <float_val> expr_float TOK_FLOAT
 */
+
+%type <int_val> TOK_NUM
+%type <float_val> TOK_FLOAT
 
 %left TOK_ADD TOK_SUB
 %left TOK_MUL TOK_DIV
@@ -23,7 +26,7 @@
 
 /* this is prog code */
 Prog: /* nothing */
- | TOK_MAIN {Stmts} {
+ | TOK_MAIN Stmts {
         #if DEBUG
         printf("Prog detected\n");
         #endif /* DEBUG */
