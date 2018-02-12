@@ -1,3 +1,4 @@
+EXP=1
 all: calc
 
 calc.tab.c calc.tab.h:	calc.y
@@ -14,3 +15,6 @@ else
 endif
 clean:
 	rm calc calc.tab.c lex.yy.c calc.tab.h
+run: calc
+	./calc <testFiles/example${EXP}.prog
+
