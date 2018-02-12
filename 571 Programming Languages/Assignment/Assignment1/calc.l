@@ -2,8 +2,10 @@
 #include <stdio.h>
 #include "Variables.h"
 #include "calc.tab.h"
-int num_lines = 0;
+void print_error(const char *msg);
 %}
+
+%option yylineno
 
 digit	([0-9])
 
@@ -26,19 +28,28 @@ digit	([0-9])
 
 "=" {   return(TOK_EQUAL);  }
 
-"+"	{	return(TOK_ADD);	}
 "-"	{	return(TOK_SUB);	}
 "*"	{	return(TOK_MUL);	}
-"/"	{	return(TOK_DIV);	}
+
+\s {}
 
 [a-z][a-zA-Z0-9]* {
     yylval.string_val = strdup(yytext);
     return(TOK_ID);}
 
-[ \n] num_lines++;
-. {printf("Invalid character '%c', ignored\n",
-			yytext[0]);
-	}
-
+[a-zA-Z0-9]+ {
+    char buf[30];
+    sprintf(buf,"Lexical analysis error: %s",yytext);
+    print_error(buf);
+}
+[ \n]
+. { char buf[30];
+    sprintf(buf,"Lexical analysis error: %s",yytext);
+    print_error(buf);
+}
 %%
+void print_error(const char *msg) {
+    printf("%s, line %d\n",msg,yylineno);
+    exit(1);
+}
 

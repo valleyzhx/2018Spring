@@ -11,7 +11,7 @@ main(){
         {
             float y;
             y = 6.0 - x;
-            printf y;
+            print y;
         };
     };
     z = y - x;
