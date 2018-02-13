@@ -26,7 +26,7 @@
 
 /* this is prog code */
 Prog: /* nothing */
- | TOK_MAIN Stmts {
+ | TOK_MAIN '(' ')' Stmts {
         #if DEBUG
         printf("Prog detected\n");
         #endif /* DEBUG */

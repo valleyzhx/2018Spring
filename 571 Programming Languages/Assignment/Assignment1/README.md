@@ -9,6 +9,9 @@ Float   -> digit+ . digit+
 
 # design
 leave syntax check to flex .l file
+yylval is define using TOKE declare
+%token <d> NUMBER
+and the could use yylval.d in NUMBER detector
 
 # TODO:
 - catch main function token??
@@ -16,6 +19,7 @@ leave syntax check to flex .l file
 - scope problem
 - don't understand what's .output for??
 - where is yylineno defined ??
+- worry about id1 - (-id)
 
 # log
 still get some warning but doesn't matter now. Ready to go, finish the book first
