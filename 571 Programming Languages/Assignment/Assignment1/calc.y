@@ -71,7 +71,7 @@ expr:
 int yyerror(char *s)
 {
     extern int yylineno;
-    printf("%s line:%d\n",s,yylineno);
+    printf("Parsing error: line %d\n",yylineno);
 	return 0;
 }
 
