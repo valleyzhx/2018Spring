@@ -6,13 +6,24 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#define kLength 1000
+
+int  _sockfd;
+
+void intHandler(int dummy){
+    close(_sockfd);
+    exit(0);
+}
+
+
 
 int main(int argc, char **argv) {
     //signal(SIGPIPE, SIG_IGN);
+    signal(SIGINT, intHandler);
+
     
-    int  sockfd;
     ssize_t read_n;
-    char recvline[100];
+    char recvline[kLength];
     struct sockaddr_in servaddr;
     
 //    if(argc!=2){
@@ -21,7 +32,7 @@ int main(int argc, char **argv) {
 //    }
     
     /* Create a TCP socket */
-    if((sockfd=socket(AF_INET,SOCK_STREAM, 0)) < 0){
+    if((_sockfd=socket(AF_INET,SOCK_STREAM, 0)) < 0){
         perror("socket"); exit(2);}
     
     /* Specify server’s IP address and port */
@@ -34,20 +45,25 @@ int main(int argc, char **argv) {
     }
     
     /* Connect to the server */
-    if (connect(sockfd,  (struct sockaddr *) &servaddr,sizeof(servaddr)) < 0 ) {
+    if (connect(_sockfd,  (struct sockaddr *) &servaddr,sizeof(servaddr)) < 0 ) {
         perror("connect"); exit(4);
     }
     
     while (1) {
         /* Read the date/time from socket */
-        while ( (read_n = read(sockfd, recvline, 100)) > 0) {
+        memset(recvline,0,1000);
+        while ( (read_n = read(_sockfd, recvline, kLength)) > 0) {
             recvline[read_n] = '\0';        /* null terminate */
             printf("%s", recvline);
             /*write command to server*/
             char input[100];
             printf("telnet>");
             fgets(input,100,stdin);
-            write(sockfd, input, strlen(input));
+            write(_sockfd, input, strlen(input));
+            if (strcmp(input,"exit\n")==0) {// exit
+                close(_sockfd);
+                exit(0);
+            }
         }
         if (read_n < 0) { perror("read"); exit(5); }
 
@@ -55,7 +71,6 @@ int main(int argc, char **argv) {
    
    
     
-    //close(sockfd);
     return 0;
 }
 
