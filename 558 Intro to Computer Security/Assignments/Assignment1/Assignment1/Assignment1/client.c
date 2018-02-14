@@ -52,24 +52,26 @@ int main(int argc, char **argv) {
     while (1) {
         /* Read the date/time from socket */
         memset(recvline,0,1000);
-        while ( (read_n = read(_sockfd, recvline, kLength)) > 0) {
-            recvline[read_n] = '\0';        /* null terminate */
+        while ( (read_n = read(_sockfd, recvline, kLength)) >= 0) {
+            //recvline[read_n] = '\0';        /* null terminate */
+            if (read_n == 0) {// exit
+                close(_sockfd);
+                exit(1);
+            }
             printf("%s", recvline);
             /*write command to server*/
             char input[100];
             printf("telnet>");
             fgets(input,100,stdin);
-            write(_sockfd, input, strlen(input));
             if (strcmp(input,"exit\n")==0) {// exit
                 close(_sockfd);
                 exit(0);
             }
+            write(_sockfd, input, strlen(input));
         }
         if (read_n < 0) { perror("read"); exit(5); }
 
     }
-   
-   
     
     return 0;
 }

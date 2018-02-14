@@ -135,9 +135,6 @@ void makeCommand(const char *buf,char *command[]){
     }
 }
 
-void intHandler(int dummy){
-    kill(_latestPid, SIGKILL);
-}
 
 #pragma mark- process
 int process(char *buffer, char* result){
