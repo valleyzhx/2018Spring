@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F065A60D203360C6000A9634 /* process.c in Sources */ = {isa = PBXBuildFile; fileRef = F065A60C203360C6000A9634 /* process.c */; };
-		F065A60F20337AF7000A9634 /* server.c in Sources */ = {isa = PBXBuildFile; fileRef = F065A60520324923000A9634 /* server.c */; };
+		F07E9AD32034BC2800F219E1 /* client.c in Sources */ = {isa = PBXBuildFile; fileRef = F065A60720324930000A9634 /* client.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -126,8 +126,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F065A60F20337AF7000A9634 /* server.c in Sources */,
 				F065A60D203360C6000A9634 /* process.c in Sources */,
+				F07E9AD32034BC2800F219E1 /* client.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -9,17 +9,20 @@
 #include <stdbool.h>
 #include "process.h"
 
-void service_client(int connfd){
+int _connfd;
+
+void service_client(){
     ssize_t read_n;
     char recvline[100];
-    while ( (read_n = read(connfd, recvline, 100)) > 0) {
-        recvline[read_n] = '\0';        /* null terminate */
+    while ( (read_n = read(_connfd, recvline, 100)) >= 0) {
+        //recvline[read_n] = '\0';        /* null terminate */
         printf("%s", recvline);
         /*perform command*/
         
-        if (strcmp(recvline,"exit\n")==0) {// exit
-            close(connfd);
-            exit(0);
+        if (read_n == 0 ) {// exit
+            perror("connected failed");
+            close(_connfd);
+            exit(1);
         }else{
             char buffer[100]={'\0'};
             int error = process(recvline,buffer);
@@ -30,21 +33,24 @@ void service_client(int connfd){
             buffer[strlen(buffer)] = '\0';
             
             /*write result to client*/
-            write(connfd, buffer, strlen(buffer));
+            write(_connfd, buffer, strlen(buffer));
+            if(error){
             
-//            if(error){
-//                close(connfd);
-//                exit(6);
-//            }
+            }
         }
     }
-    if (read_n < 0) { perror("read"); close(connfd);exit(5); }
+    if (read_n < 0) { perror("read"); close(_connfd);exit(5); }
 }
 
-
+void intHandler(int dummy){
+    close(_connfd);
+    exit(0);
+}
 
 int main(int argc, char **argv) {
-    int   listenfd, connfd;
+    signal(SIGINT, intHandler);
+
+    int   listenfd;
     socklen_t clilen;
     struct sockaddr_in servaddr, cliaddr;
     char buff[100];
@@ -67,19 +73,19 @@ int main(int argc, char **argv) {
     for ( ; ; ) {
         /* Wait for client connections and accept them */
         clilen = sizeof(cliaddr);
-        connfd = accept(listenfd, (struct sockaddr *)&cliaddr, &clilen);
+        _connfd = accept(listenfd, (struct sockaddr *)&cliaddr, &clilen);
         /* Retrieve system time */
         ticks = time(NULL);
         snprintf(buff, sizeof(buff), "%.24s\r\n", ctime(&ticks));
         printf("%s\r\n", ctime(&ticks));
         /* Write to socket */
-        write(connfd, buff, strlen(buff));
+        write(_connfd, buff, strlen(buff));
         
-        service_client(connfd);
+        service_client();
         
         
         /* Close the connection */
-       // close(connfd);
+       // close(_connfd);
     }
 }
 
