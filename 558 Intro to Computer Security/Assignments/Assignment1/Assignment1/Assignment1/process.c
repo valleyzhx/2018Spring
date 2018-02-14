@@ -22,7 +22,7 @@ int _latestPid = 0;
 #pragma mark- write to pipe
 
 void printString(char *string,char *result){
-    printf("=>%s",string);
+    printf("%s",string);
     strcpy(result, string);
 }
 
@@ -31,10 +31,11 @@ void printString(char *string,char *result){
 
 int innerCommand(char *command[],char *result,int *error){
     if (strcmp(command[0],"pwd\0")==0){
-        char buf[kLength];
+        char buf[kLength]={'\0'};
         if ( getcwd(buf,sizeof(buf)) == NULL) {//get current dir
             printf("getcwd() error");
         }else{
+            buf[strlen(buf)] = '\n';
             printString(buf,result);
         }
         return 1;
@@ -82,9 +83,10 @@ int runProcess(char *command[],char *result){
         }else{//father process
             _latestPid = pid;
             while (waitpid(pid,&status,0)!=pid);
-            close(fd[1]);
             
+            close(fd[1]);
             read(fd[0], result, 1000);
+            dup2(fd[0], 0);
             int a = 0;
         }
     }
