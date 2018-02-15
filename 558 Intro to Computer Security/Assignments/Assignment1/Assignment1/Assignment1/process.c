@@ -42,7 +42,8 @@ int innerCommand(char *command[],char *result,int *error){
     }else if (strcmp(command[0],"cd")==0){//cd dir
         const char *dir = command[1];
         if (chdir(dir)>=0) {
-            printString("",result);
+            result[0] = '\2';
+            //printString("",result);
         }else{
             *error = EXIT_FAILURE;
             printString("No Such Directory\n",result);
@@ -87,7 +88,6 @@ int runProcess(char *command[],char *result){
             close(fd[1]);
             read(fd[0], result, 1000);
             dup2(fd[0], 0);
-            int a = 0;
         }
     }
     return error;
