@@ -16,7 +16,6 @@ void intHandler(int dummy){
 }
 
 
-
 int main(int argc, char **argv) {
     //signal(SIGPIPE, SIG_IGN);
     signal(SIGINT, intHandler);
@@ -26,10 +25,10 @@ int main(int argc, char **argv) {
     char recvline[kLength];
     struct sockaddr_in servaddr;
     
-//    if(argc!=2){
-//        printf("Usage : gettime <IP address>");
-//        exit(1);
-//    }
+    if(argc!=2){
+        printf("Usage : gettime <IP address>");
+        exit(1);
+    }
     
     /* Create a TCP socket */
     if((_sockfd=socket(AF_INET,SOCK_STREAM, 0)) < 0){
@@ -40,7 +39,7 @@ int main(int argc, char **argv) {
     servaddr.sin_family = AF_INET;
     servaddr.sin_port = htons(10000); /* daytime server port */
     
-    if (inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr) <= 0) {
+    if (inet_pton(AF_INET, argv[1], &servaddr.sin_addr) <= 0) {
         perror("inet_pton"); exit(3);
     }
     
@@ -51,7 +50,6 @@ int main(int argc, char **argv) {
     
     while (1) {
         /* Read the date/time from socket */
-        memset(recvline,0,1000);
         while ( (read_n = read(_sockfd, recvline, kLength)) >= 0) {
             //recvline[read_n] = '\0';        /* null terminate */
             if (read_n == 0) {// exit
@@ -68,6 +66,7 @@ int main(int argc, char **argv) {
                 exit(0);
             }
             write(_sockfd, input, strlen(input));
+            memset(recvline,0,1000);
         }
         if (read_n < 0) { perror("read"); exit(5); }
 

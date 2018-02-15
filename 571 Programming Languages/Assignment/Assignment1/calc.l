@@ -50,6 +50,6 @@ digit	([0-9])
 %%
 void print_error(const char *msg) {
     printf("%s, line %d\n",msg,yylineno);
-    exit(0);
+    //exit(0);
 }
 

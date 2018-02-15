@@ -24,14 +24,9 @@ void service_client(){
             close(_connfd);
             exit(1);
         }else{
-            char buffer[100]={'\0'};
+            char buffer[1000]={'\0'};
             int error = process(recvline,buffer);
-            size_t length = strlen(buffer);
-            if (length == 0) {
-                buffer[length] = '\2';
-            }
             buffer[strlen(buffer)] = '\0';
-            
             /*write result to client*/
             write(_connfd, buffer, strlen(buffer));
             if(error){
