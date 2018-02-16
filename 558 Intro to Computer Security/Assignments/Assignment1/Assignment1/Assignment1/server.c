@@ -26,6 +26,9 @@ void service_client(){
         }else{
             char buffer[1000]={'\0'};
             int error = process(recvline,buffer);
+            if (buffer[0]=='\0') {
+                buffer[0] = '\2';
+            }
             buffer[strlen(buffer)] = '\0';
             /*write result to client*/
             write(_connfd, buffer, strlen(buffer));
