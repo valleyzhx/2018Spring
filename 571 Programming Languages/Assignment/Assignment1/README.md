@@ -1,5 +1,6 @@
 ### Xiang Zhang  (zxiang4@binghamton.edu)
 ### Wenchen Li  (wli100@binghamton.edu)
+####  Tested in bingsuns
 1. Compile <br>
   `make`
 2. Run<br>
