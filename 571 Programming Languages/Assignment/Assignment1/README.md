@@ -1,3 +1,5 @@
+### Xiang Zhang  (zxiang4@binghamton.edu)
+### Na Li  (nli19@binghamton.edu)
 1. Compile <br>
   `make`
 2. Run<br>
