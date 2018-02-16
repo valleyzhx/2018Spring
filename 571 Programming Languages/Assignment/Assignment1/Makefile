@@ -9,9 +9,9 @@ lex.yy.c: calc.l calc.tab.h
 
 calc: lex.yy.c calc.tab.c calc.tab.h
 ifeq ($(shell uname), Darwin)
-	gcc -o calc calc.tab.c lex.yy.c Variables.c -ll;
+	gcc -o calc calc.tab.c lex.yy.c Variables.c -ll -std=c99;
 else
-	gcc -o calc calc.tab.c lex.yy.c Variables.c -lfl;
+	gcc -o calc calc.tab.c lex.yy.c Variables.c -lfl -std=c99;
 endif
 clean:
 	rm calc calc.tab.c lex.yy.c calc.tab.h
