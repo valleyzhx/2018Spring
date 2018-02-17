@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
     /* Specify server’s IP address and port */
     bzero(&servaddr, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
-    servaddr.sin_port = htons(10000); /* daytime server port */
+    servaddr.sin_port = htons(10086); /* daytime server port */
     
     if (inet_pton(AF_INET, inet_ntoa(*(struct in_addr *)he->h_addr_list[0]), &servaddr.sin_addr) <= 0) {
         perror("inet_pton"); exit(4);
