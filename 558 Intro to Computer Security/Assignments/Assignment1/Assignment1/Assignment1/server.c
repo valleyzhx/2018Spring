@@ -23,7 +23,7 @@ void service_client(){
         /*perform command*/
         
         if (read_n == 0 ) {// exit
-            perror("connected failed");
+            printf("exit");
             close(_connfd);
             exit(1);
         }else{
@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
     bzero(&servaddr, sizeof(servaddr));
     servaddr.sin_family      = AF_INET;
     servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    servaddr.sin_port        = htons(10000);   /* daytime server */
+    servaddr.sin_port        = htons(10086);   /* daytime server */
     
     /* Bind server’s address and port to the socket */
     bind(listenfd, (struct sockaddr *) &servaddr, sizeof(servaddr));
