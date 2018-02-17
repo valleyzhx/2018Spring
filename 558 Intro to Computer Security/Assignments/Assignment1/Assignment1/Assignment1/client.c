@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <string.h>
+#include <strings.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
@@ -36,7 +37,7 @@ int main(int argc, char **argv) {
     }
     
     if ((he = gethostbyname(argv[1])) == NULL) {  // get the host info
-        herror("gethostbyname");
+        perror("gethostbyname");
         exit(2);
     }
     
@@ -49,7 +50,7 @@ int main(int argc, char **argv) {
     servaddr.sin_family = AF_INET;
     servaddr.sin_port = htons(10000); /* daytime server port */
     
-    if (inet_pton(AF_INET, inet_ntoa(*(struct in_addr *)he->h_addr), &servaddr.sin_addr) <= 0) {
+    if (inet_pton(AF_INET, inet_ntoa(*(struct in_addr *)he->h_addr_list[0]), &servaddr.sin_addr) <= 0) {
         perror("inet_pton"); exit(4);
     }
     
