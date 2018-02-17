@@ -3,11 +3,13 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <strings.h>
+#include <string.h>
 #include <time.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <signal.h>
 #include "process.h"
+
 
 int _connfd;
 
