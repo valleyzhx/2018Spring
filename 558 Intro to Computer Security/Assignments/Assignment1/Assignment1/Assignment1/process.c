@@ -7,7 +7,6 @@
 //
 
 #include "process.h"
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -47,7 +46,9 @@ int innerCommand(char *command[],char *result,int *error){
             //printString("",result);
         }else{
             *error = EXIT_FAILURE;
-            printString("No Such Directory\n",result);
+            char buf[kLength]={'\0'};
+            sprintf(buf,"%s: does not exist\n",command[1]);
+            printString(buf,result);
         }
         return 1;
     }
@@ -71,7 +72,7 @@ int runProcess(char *command[],char *result){
     int fd[2];
     pipe(fd);
     
-    if (!innerCommand(command, result, &error)) { // if not listjobs
+    if (!innerCommand(command, result, &error)) {
         pid = fork();
         if (pid <0) {
             printString("fork() error!",result);
@@ -79,6 +80,7 @@ int runProcess(char *command[],char *result){
         }
         int status;
         if (pid == 0) { //child process
+            dup2(fd[1], 2); // redirect stderr
             dup2(fd[1], 1); // redirect stdout
             outerCommand(command,fd,&error);
             exit(error);
@@ -95,7 +97,7 @@ int runProcess(char *command[],char *result){
     
 }
 #pragma mark- makeCommand
-void makeCommand(const char *buf,char *command[]){
+int makeCommand(const char *buf,char *command[]){
     int wordIndex = 0;
     int letterIndex = 0;
     
@@ -109,15 +111,10 @@ void makeCommand(const char *buf,char *command[]){
         }else if (c == '\n'){//command end
             c = '\0';
             isEnd = true;
+        }else if (c == '-'){
+            return -1;
         }
-        if (c == '&' && buf[i-1]==' '&&buf[i+1]=='\n') {
-            c = '\0';
-            command[wordIndex] = NULL;
-            char *com = malloc(sizeof(char) * kLength);
-            strncpy(com, buf,length-1);
-            com[length-1] = '\0';
-            return;
-        }
+       
         word[letterIndex] = c;
         letterIndex++;
         if (c == '\0') {
@@ -130,19 +127,33 @@ void makeCommand(const char *buf,char *command[]){
             wordIndex++;
             if (isEnd) { // command end
                 command[wordIndex] = NULL;
-                return ;
+                return 0;
             }
         }
     }
+    return -1;
 }
 
 
 #pragma mark- process
 int process(char *buffer, char* result){
     char *command[kLength];
-    makeCommand(buffer, command);
-
-    return runProcess(command, result);
+    int error = makeCommand(buffer, command);
+    
+    if (error == 0){
+        bool pwd = strcmp(command[0],"pwd\0")==0;
+        bool cd = strcmp(command[0],"cd\0")==0;
+        bool ls = strcmp(command[0],"ls\0")==0;
+        bool mkdir = strcmp(command[0],"mkdir\0")==0;
+        bool rmdir = strcmp(command[0],"rmdir\0")==0;
+        bool exit = strcmp(command[0],"exit\0")==0;
+        
+        if (pwd||cd||ls||mkdir||rmdir||exit) {
+             return runProcess(command, result);
+        }
+    }
+    strcpy(result, "invalid command!\n");
+    return -1;
 
 }
 
