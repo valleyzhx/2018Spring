@@ -1,7 +1,7 @@
 ### Xiang Zhang  (zxiang4@binghamton.edu)
 ### Na Li  (nli19@binghamton.edu)
-#### NOT Tested in bingsuns
+#### Tested in bingsuns
 `make`<br>
 `./telnetser`<br>
-`./telnetcli 127.0.0.1`<br>
+`./telnetcli bingsuns.binghamton.edu`<br>
 `make clean`
