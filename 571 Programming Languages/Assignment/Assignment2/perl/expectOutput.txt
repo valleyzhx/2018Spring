@@ -1,0 +1,12 @@
+today contains at least two vowel letters
+today does not start with h
+lord contains or
+lord does not start with h
+tomorrow contains or
+tomorrow contains at least two vowel letters
+tomorrow does not start with h
+helloy contains at least two vowel letters
+helloy has e as the second symbol and ends with y
+helloa contains at least two vowel letters
+abc34 does not start with h
+abc34 contains both letters and digits
