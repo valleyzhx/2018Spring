@@ -75,12 +75,12 @@ output:
             -> int, global
         b   => int, global
         p   => int, local to p
-            -> void, function
+            -> int, function
     point 2:
         a   => int, global
         b   => int, local to q
             -> int, global
-        p   => void, function
+        p   => int, function
         print=> void, function
         q   -> void, function
     point 3:
@@ -88,7 +88,7 @@ output:
         b   => int, global
         p   => void, function
         print=> void, function
-        q   -> void, function
+        q   => void, function
         main=> void, function
 
 
