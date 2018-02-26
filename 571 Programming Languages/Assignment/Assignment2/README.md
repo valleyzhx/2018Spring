@@ -1,5 +1,9 @@
-TODO: all
-could use Latex to write .pdf
+co-developers:
+Wenchen Li: wli100@binghamton.edu
+Xiang Zhang: zxiang4@binghamton.edu
+
+TODO:
+- [ ] could use Latex to write .pdf
 
 # Assignment 2
 
