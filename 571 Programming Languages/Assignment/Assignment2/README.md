@@ -123,7 +123,7 @@ main(){
 output:
 1
 1
-4
+3
 /* one */
 x => someAddress1
 y => 0
