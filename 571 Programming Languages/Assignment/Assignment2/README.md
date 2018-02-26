@@ -8,8 +8,8 @@ TODO:
 # Assignment 2
 
 ## 1
-fake RE
-(a(bb)*b)+
+(a(bb)*b)+ # don't consider begin with b
+(b*(ab)*(ab)*)+
 
 ## 2
 (b|c)a?(d+e)*
