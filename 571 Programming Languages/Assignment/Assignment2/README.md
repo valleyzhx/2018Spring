@@ -166,6 +166,10 @@ call by value:
 1 2 1 0
 2 1 0
 
+call by name:
+0 2 1 2
+0 1 2
+
 note: c doesn't have call be reference
 
 ## 6
