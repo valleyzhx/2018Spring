@@ -116,6 +116,7 @@ main(){
     z = 3;
     printf("%d\n", *y);
     **x = 4;
+    /* three */
     printf("%d\n", z);
     return 0;
 }
