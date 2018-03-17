@@ -61,18 +61,12 @@ bool _isChangeViewSize = 0;
 bool _isChangeWindowSize = 0;
 bool _isMovingWindow = 0;
 
-
-Point _points[40000];
+Point _points[100000];
 int _pointsNumber = 0;
-
-
 
 float _matrix[3][3];
 
-
-
 void suthHodgClipping(Point points[],Point clicpPoints[],int *number);
-
 
 #pragma mark- matrix
 void matrix_multiplication(float a[3][3], float b[3][3], float c[3][3])
@@ -122,7 +116,6 @@ void makeMatrix(){
     
     matrix_multiplication(transMatrix2, shearingMatrix, _matrix);
     matrix_multiplication(_matrix, transMatrix1, _matrix);
-    
 }
 
 #pragma mark- polygon
@@ -131,7 +124,6 @@ void addPoint(Polygon *polygon,Point point){
     polygon->points[index] = point;
     polygon->pointNumber = index+1;
 }
-
 
 #pragma mark- draw viewport
 void drawViewport(void){
@@ -150,7 +142,6 @@ void drawViewport(void){
 #pragma mark- draw dashed window
 
 void drawDashedWindow(void){
-    
     glLineStipple(5, 0xAAAA);
     glEnable(GL_LINE_STIPPLE);
     glBegin(GL_LINE_LOOP);
@@ -185,7 +176,7 @@ void drawPoints(){
 
 #pragma mark- opengl draw line
 void drawpolygon(){
-    Point tempArr[20];
+    Point tempArr[100];
     int tempNumber = _polygon.pointNumber;
     glDisable(GL_LINE_STIPPLE);
     glColor3f(1.0, 0.0, 0.0);
@@ -209,13 +200,11 @@ void drawpolygon(){
     if (_isStart == 0) {
         suthHodgClipping(tempArr,_viewPoints,&tempNumber);
     }
-    
     glBegin(_polygon.lineMode);
     for (int i=0; i<tempNumber; i++) {
         Point p = tempArr[i];
         glVertex3i(p.x, p.y, 0.0);
     }
-    
     
     glEnd();
     if (_menu_type == 2) {
@@ -235,7 +224,7 @@ void mouseClick(int button, int state, int x, int y){
             rightUp = _clicpPoints[2];
             if (abs(rightUp.x - x) <20 && abs(rightUp.y-y) <20) {
                 _isChangeWindowSize = true;
-            }else if(isInsiseWindow((Point){x,y})){
+            }else if(!_isStart&&_polygon.pointNumber&&isInsiseWindow((Point){x,y})){
                 _movingStart.x = x;
                 _movingStart.y = y;
                 _isMovingWindow = true;
@@ -317,10 +306,9 @@ void mouseMotion(int x, int y){
         for (int i=0; i<4; i++) {
             _clicpPoints[i].x -= width;
             _clicpPoints[i].y -= height;
-            _movingStart.x = x;
-            _movingStart.y = y;
-
         }
+        _movingStart.x = x;
+        _movingStart.y = y;
         
         makeMatrix();
         glutPostRedisplay();
@@ -437,6 +425,8 @@ void suthHodgClipping(Point points[],Point clicpPoints[],int *number){
     glutPostRedisplay();
 }
 
+
+
 #pragma mark- filling
 
 bool insidePolygon(Point point){
@@ -478,13 +468,19 @@ void fillPolygon(Point polygon[]){
 
 
 void scanFilling(){
+    
+    for (int i=0; i<_pointsNumber; i++) {
+        _points[i].x = 0;
+        _points[i].y = 0;
+    }
+    
     //Point point = pointInsidePolygon();
+    Point wLeftBottom = _clicpPoints[0];// left bottom
+    Point wLeftUp = _clicpPoints[1];// left up
+    Point wRightUp = _clicpPoints[2];// right up
     
-    
-    
-    
-    for (int i=200; i<400; i++) {
-        for (int j=200; j<400; j++) {
+    for (int i=wLeftUp.y; i<wLeftBottom.y; i++) {
+        for (int j=wLeftUp.x; j<wRightUp.x; j++) {
             if (insidePolygon((Point){j,i})) {
                 _points[_pointsNumber++] = (Point){j,i};
             }
@@ -493,7 +489,45 @@ void scanFilling(){
     glutPostRedisplay();
 }
 
+bool isLowEndInPolygon(Point point,Polygon polygon){
+    
+    for (int i=0; i<polygon.pointNumber; i++) {
+        Point poly = polygon.points[i];
+        if (poly.x == point.x && poly.y == point.y) {
+            int prev = i-1>=0?i-1:polygon.pointNumber-1;
+            int next = i+1<polygon.pointNumber?i+1:0;
+            
+            if (poly.y <= polygon.points[prev].y && poly.y <= polygon.points[next].y) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
+void scanLineFilling(){
+    Point wLeftBottom = _clicpPoints[0];// left bottom
+    Point wLeftUp = _clicpPoints[1];// left up
+    Point wRightUp = _clicpPoints[2];// right up
+    
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+
+    for (int i=wLeftUp.y; i<wLeftBottom.y; i++) {
+        for (int j=wLeftUp.x; j<wRightUp.x; j++) {
+            int red;
+            glReadPixels(j, i, 1, 1,
+                         GL_RED, GL_UNSIGNED_BYTE, &red);
+            if (red == 255) {
+                if (isLowEndInPolygon((Point){j,i}, _polygon)) {
+                    
+                }
+            }
+            printf("%d ",red);
+        }
+        printf("\n");
+    }
+    
+}
 
 #pragma mark- menu
 void menuMethod(int value){
@@ -504,13 +538,14 @@ void menuMethod(int value){
             _polygon.lineMode = GL_LINE_LOOP;
             break;
         case 2:
+            _menu_type = 1;
+            suthHodgClipping(_polygon.points,_clicpPoints,&(_polygon.pointNumber));
+            _polygon.lineMode = GL_LINE_LOOP;
             _menu_type = 2;
             scanFilling();
-          
+            //scanLineFilling();
             break;
-        case 3:
-            
-            break;
+        
         default:
             break;
     }
@@ -522,7 +557,8 @@ void make_menu(void)
     glutCreateMenu(menuMethod);
     glutAddMenuEntry("polygon clipping", 1);
     glutAddMenuEntry("region filling", 2);
-    glutAddMenuEntry("Window-to-Viewport Mapping", 3);
+    //glutAddMenuEntry("Window-to-Viewport Mapping", 3);
+    //glutAddMenuEntry("Liang Barsky Polygon Clip", 3);
 
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
