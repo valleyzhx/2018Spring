@@ -5,9 +5,15 @@ member a(b:xs)
     |otherwise = member a xs
 append []ys = ys
 append (x:xs)ys = x:append xs ys
-union lt1 (y:ys)
-    |member y lt1 = union lt1 ys
-    |otherwise = append lt1 [y]
+union [] [] = []
+union [] (y:ys) = union [y] ys
+union (x:xs) []
+    |xs ==[] = [x]
+    |otherwise = union [x] xs
+union (x:xs) (y:ys)
+    |member x xs = union xs (y:ys)
+    |member y (x:xs) = union (x:xs) ys
+    |otherwise = append (x:xs) [y]
  
 --2.delete
 deletek k n[] = [] 
