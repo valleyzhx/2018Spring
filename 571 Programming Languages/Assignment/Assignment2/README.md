@@ -9,7 +9,8 @@ TODO:
 
 ## 1
 (a(bb)*b)+ # don't consider begin with b
-(b*(ab)*(ab)*)+
+(b*(ab)*(ab)*)+ # a has to be show up once
+b*(ab(bb)*)+
 
 ## 2
 (b|c)a?(d+e)*
@@ -133,6 +134,11 @@ y => 0
 x => someAddress1 -> someAddress2 -> 1
 y => someAddress2 -> 1
 z => 1
+
+/* three */
+x => someAddress1 -> someAddress2 -> 4
+y => someAddress2 -> 4
+z => 3
 
 ## 5
 call by reference
