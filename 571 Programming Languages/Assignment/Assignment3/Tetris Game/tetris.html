@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+canvas {
+    border:1px solid #d3d3d3;
+    background-color: #f1f1f1;
+}
+</style>
+</head>
+<body onload="startGame()">
+<script>
+
+/* config */
+var _height_ = 240;
+var _width_ = 180;
+var _speedX_ = 20;
+var _speedY_ = 20;
+var _sizeofComponent_ = [[20, 20], [40, 20], [60, 20], [80, 20]];
+var _showupPosition_ = [80, -20];
+var _freshInterval_ = 700; // millisecond
+
+/* varialbes */
+var myGamePiece = [];
+var myGamePieceSize = 0;
+var score = 0;
+var currentPiece;
+
+var _mapping = new Array();
+for(var i=0;i<12;i++){        
+    _mapping[i] = new Array();
+    for(var j=0;j<9;j++){    
+        _mapping[i][j] = 0;
+    }
+}
+
+function startGame() {
+    ++myGamePieceSize;
+    myGamePiece.push( new component(_sizeofComponent_[0][1],
+                                    _sizeofComponent_[0][0],
+                                    "red",
+                                    _showupPosition_[0], _showupPosition_[1]));
+    myGameArea.start();
+}
+
+var myGameArea = {
+    canvas : document.createElement("canvas"),
+    start : function() {
+        this.canvas.width = _width_;
+        this.canvas.height = _height_;
+        this.context = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        this.interval = setInterval(updateGameArea, _freshInterval_);
+        window.addEventListener('keydown', function (e) {
+            myGameArea.key = e.keyCode;
+        })
+        window.addEventListener('keyup', function (e) {
+            myGameArea.key = false;
+        })
+    },
+    clear : function() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    },
+    // it's not what I want in the game, to stop all the movement
+    stop : function() {
+        clearInterval(this.interval);
+    }
+}
+
+function component(width, height, color, x, y) {
+    this.width = width;
+    this.height = height;
+    this.x = x;
+    this.y = y;
+    this.speedX = 0;
+    this.speedY = _speedY_;
+    this.update = function(){
+        ctx = myGameArea.context;
+        ctx.fillStyle = color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    },
+    this.clear = function(){
+        myGameArea.context.clearRect(this.x, this.y, this.width, this.height);
+    },
+    this.newPos = function() {
+        // reach the bottom, stop
+        if(this.y + this.height >= _height_)
+            return;
+        this.y += this.speedY;
+        // touch the right or left side, don't change the this.x
+        if((this.x<=0&&this.speedX<0) || ((this.x+this.width>=_width_)&&this.speedX>0))
+            return;
+        this.x += this.speedX;
+    },
+    this.crashWith = function(otherobj) {
+        var myleft = this.x;
+        var myright = this.x + (this.width);
+        var mytop = this.y;
+        var mybottom = this.y + (this.height);
+        var otherleft = otherobj.x;
+        var otherright = otherobj.x + (otherobj.width);
+        var othertop = otherobj.y;
+        var otherbottom = otherobj.y + (otherobj.height);
+        var crash = true;
+        if ((mybottom < othertop) || (mytop > otherbottom) ||
+            (myright < otherleft) || (myleft > otherright)) {
+            crash = false;
+        }
+        return crash;
+    },
+    this.canMoveLeft = function(){
+        var row = this.y/20;
+        var col = this.x/20;
+        if(col == 0) return false;
+        return (_mapping[row][col-1] == 0);
+    },
+    this.canMoveRight = function(){
+        var row = this.y/20;
+        var col = this.x/20;
+        if(col == 11) return false;
+        return (_mapping[row][col+1] == 0);
+    },
+    this.stop = function(){
+        this.speedX = 0;
+        this.speedY = 0;
+    }
+}
+
+function updateGameArea() {
+    // if (myGamePiece[0].crashWith(myObstacle)) {
+        // myGameArea.stop();
+        // myGamePiece[0].stop();
+    // } else {
+        //myGameArea.clear();
+        myGamePiece[0].clear();
+        myGamePiece[0].speedX = 0;
+        myGamePiece[0].speedY = _speedY_;
+        myGamePiece[0].newPos();
+        myGamePiece[0].update();
+    // }
+}
+function clickLeft(){
+    piece = myGamePiece[0];
+    if (piece.canMoveLeft()) {
+        piece.clear();
+        piece.speedX = -_speedX_;
+        piece.speedY = 0;
+        piece.newPos();
+        piece.update();
+    }
+   
+}
+function clickRight(){
+    piece = myGamePiece[0];
+    if (piece.canMoveRight()) {
+        piece.clear();
+        piece.speedX = _speedX_;
+        piece.speedY = 0;
+        piece.newPos();
+        piece.update();
+    }
+}
+
+</script>
+
+<p>The red square moves one pixel to the right, 50 times per second.</p>
+<p>this is my assginment.</p>
+<button onclick="clickLeft()">Left</button>
+<button onclick="clickRight()">Right</button>
+
+</body>
+</html>

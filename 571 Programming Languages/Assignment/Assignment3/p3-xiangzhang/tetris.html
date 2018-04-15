@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+canvas {
+    border:1px solid #d3d3d3;
+    background-color: #f1f1f1;
+}
+</style>
+</head>
+<body onload="startGame()">
+<script>
+
+/* config */
+var _height_ = 240; // height of canvas
+var _width_ = 180; // width of canvas
+var _blockHeight_ = 20; // height or length of clock
+var _speedX_ = 20;
+var _speedX_interval_ = 5; // can't fresh every frame, too fast
+var _speedY_ = 1;
+var _sizeofComponent_ = [[20, 20], [40, 20], [60, 20], [80, 20]]; // 4 kinds
+var _showupPosition_ = [0, -20];
+var _freshInterval_ = 20; // millisecond per frame
+
+/* global varialbes */
+var myGamePiece = [];
+var myGamePieceSize = 0; // myGamePiece.length
+var score = 0;
+var testLevel = [
+                0, 0, 0, 0,
+                0, 0, 0, 0,
+                0, 0, 0, 0 ] // used to detect full line
+
+var myGameArea = {
+    canvas : document.createElement("canvas"),
+    start : function() {
+        this.canvas.width = _width_;
+        this.canvas.height = _height_;
+        this.context = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        this.frameNo = 0;
+        this.interval = setInterval(updateGameArea, _freshInterval_);
+        window.addEventListener('keydown', function (e) {
+            myGameArea.key = e.keyCode;
+        })
+        window.addEventListener('keyup', function (e) {
+            myGameArea.key = false;
+        })
+    },
+    clear : function() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    },
+    // it's not what I want in the game, to stop all the movement
+    stop : function() {
+        clearInterval(this.interval);
+    }
+}
+
+/* this is the ctor of component */
+function component(width, height, color, x, y) {
+    this.width = width;
+    this.height = height;
+    this.x = x;
+    this.y = y;
+    this.speedX = 0;
+    this.speedY = 0;
+    this.level = -1; // mark it's level when crash
+    this.isCanceled = 0; // mark it whether have been cancelled
+    this.isAdded = 0; // mark it whether have add to testLevel[x], and whether it's stopped
+    this.update = function(){
+        ctx = myGameArea.context;
+        ctx.fillStyle = color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    },
+    this.newPos = function() {
+        // reach the bottom, stop
+        this.y += this.speedY;
+        // touch the right or left side, don't change the this.x
+        if(this.x+this.speedX<0 || this.x+this.speedX+this.width > _width_)
+            return;
+        for(var i=0; i<myGamePieceSize-1; ++i){
+            if(this.kissWith(myGamePiece[i]))
+                return;
+        }
+        this.x += this.speedX;
+    },
+    this.crashWith = function(otherobj) {
+        var myleft = this.x;
+        var myright = this.x + (this.width)-1;
+        var mytop = this.y;
+        var mybottom = this.y + (this.height)-1;
+        var otherleft = otherobj.x;
+        var otherright = otherobj.x + (otherobj.width)-1;
+        var othertop = otherobj.y;
+        var otherbottom = otherobj.y + (otherobj.height)-1;
+        var crash = true;
+        if ((mybottom <  othertop) || (mytop >  otherbottom) ||
+            (myright <  otherleft) || (myleft >  otherright)) {
+            crash = false;
+        }
+        return crash;
+    },
+    // detect whether this one is moving into others
+    this.kissWith = function(otherobj) {
+        var myleft = this.x + this.speedX;
+        var myright = myleft + (this.width)-1;
+        var mytop = this.y;
+        var mybottom = this.y + (this.height)-1;
+        var otherleft = otherobj.x;
+        var otherright = otherobj.x + (otherobj.width)-1;
+        var othertop = otherobj.y;
+        var otherbottom = otherobj.y + (otherobj.height)-1;
+        var crash = true;
+        if ((mybottom <  othertop) || (mytop >  otherbottom) ||
+            (myright <  otherleft) || (myleft >  otherright)) {
+            crash = false;
+        }
+        return crash;
+    },
+    this.stop = function(){
+        this.speedX = 0;
+        this.speedY = 0;
+    }
+}
+
+function updateGameArea() {
+    myGameArea.frameNo += 1;
+    // generate new component, stupid according to the timer
+    // TODO: possible bug, if componient didn't stop before 250 frames
+    if (myGameArea.frameNo == 1 || everyinterval(250)) {
+        var kind = Math.floor(4*Math.random()); // generate 0, 1, 2, 3 randomly
+        ++myGamePieceSize;
+        myGamePiece.push(new component(
+            _sizeofComponent_[kind][0],
+            _sizeofComponent_[kind][1],
+            "red",
+            _showupPosition_[0], _showupPosition_[1]));
+    }
+
+    // for each component, there fixed time frame to go,
+    // if it's already stopped, then not need to clear and update them
+    if(myGamePiece[myGamePieceSize-1].isAdded != 0){
+        return;
+    }
+
+    // the normal situation
+    myGamePiece[myGamePieceSize-1].speedX = 0;
+    myGamePiece[myGamePieceSize-1].speedY = _speedY_;
+    // key control
+    {
+        if(everyinterval(_speedX_interval_)){
+            if (myGameArea.key && myGameArea.key == 37){
+                myGamePiece[myGamePieceSize-1].speedX = -_speedX_;
+            }
+            if (myGameArea.key && myGameArea.key == 39){
+                myGamePiece[myGamePieceSize-1].speedX = _speedX_;
+            }
+        }
+
+    }
+    // determine the crash
+    for(var i=0; i< myGamePieceSize-1; ++i){
+        if (myGamePiece[i].isCanceled == 0 &&
+            myGamePiece[myGamePieceSize-1].crashWith(myGamePiece[i])) {
+                myGamePiece[myGamePieceSize-1].stop();
+                var level = Math.round(myGamePiece[myGamePieceSize-1].y / _blockHeight_);
+                setComponentLevelandy(level, myGamePieceSize-1);
+                if(level <= 0) { // reach the top level
+                    myGameArea.stop();
+                    alert("Game over");
+                    return;
+                }
+                addtestLevel(level, myGamePieceSize-1);
+                // full line
+                if(testLevel[level] >= _width_){
+                    fullLineUpdate(level, myGamePieceSize-1);
+                }
+                break;
+
+        }
+    }
+    // update all components
+    myGameArea.clear();
+    for(var i=0; i< myGamePieceSize; ++i){
+        if(myGamePiece[i].isCanceled == 0){
+            myGamePiece[i].newPos(); // newPos will detect the bottom and two sides
+            myGamePiece[i].update();
+        }
+    }
+}
+
+/* helper functions */
+function everyinterval(n) {
+    if ((myGameArea.frameNo / n) % 1 == 0) {return true;}
+    return false;
+}
+
+// when component stops, detect funsction will continue detect several times
+// until next block is generated
+function addtestLevel(level, index){
+    if(myGamePiece[index].isAdded == 0){
+        testLevel[level] += myGamePiece[index].width;
+        myGamePiece[index].isAdded = 1;
+    }
+}
+
+function setComponentLevelandy(level, index){
+    myGamePiece[index].level = level;
+    myGamePiece[index].y = level * _blockHeight_;
+    console.log("index: ", index, "level: ", level);
+}
+
+function fullLineUpdate(level, index){
+    if(myGamePiece[index].isCanceled == 1)
+        return;
+    // update all components except the bottom one
+    for(var i=1; i< myGamePieceSize; ++i){
+        var ilevel = myGamePiece[i].level;
+        if(ilevel < level){
+            setComponentLevelandy(ilevel+1, i);
+        }else if(ilevel == level){
+            myGamePiece[i].isCanceled = 1;
+        }
+    }
+    // update the testLevel
+    for(var i=level; i>0; --i){
+        testLevel[i] = testLevel[i-1]
+    }
+    score++;
+    updateScoreDisplay();
+    console.log("full line, index: ", index, "level: ", level);
+
+}
+
+/* button functions */
+function moveleft() {
+    if(myGamePiece[myGamePieceSize-1].x -
+          _speedX_ < 0){
+        return;
+    }
+    // prevent move into others blocks
+    myGamePiece[myGamePieceSize-1].speedX = -_speedX_;
+    for(var i=0; i<myGamePieceSize-1; ++i){
+      if(myGamePiece[myGamePieceSize-1].kissWith(myGamePiece[i])){
+        console.log("kissed");
+        myGamePiece[myGamePieceSize-1].speedX = 0;
+        return;
+      }
+    }
+    myGamePiece[myGamePieceSize-1].x -= _speedX_;
+}
+
+function moveright() {
+    if(myGamePiece[myGamePieceSize-1].x+
+            _speedX_+
+            myGamePiece[myGamePieceSize-1].width > _width_ ){
+        return;
+    }
+    // prevent move into others blocks
+    myGamePiece[myGamePieceSize-1].speedX = _speedX_;
+    for(var i=0; i<myGamePieceSize-1; ++i){
+      if(myGamePiece[myGamePieceSize-1].kissWith(myGamePiece[i])){
+        myGamePiece[myGamePieceSize-1].speedX = 0;
+        return;
+      }
+    }
+
+    myGamePiece[myGamePieceSize-1].x += _speedX_;
+}
+
+function clearmove() {
+    myGamePiece[myGamePieceSize-1].speedX = 0;
+}
+
+/* score display */
+function updateScoreDisplay(){
+    document.getElementById("score").innerHTML = score;
+}
+/* main function */
+function startGame() {
+    // make reason of component stop to be only crash
+    ++myGamePieceSize;
+    myGamePiece.push(new component(_width_, _blockHeight_, "green", 0, _height_));
+    // start game
+    myGameArea.start();
+}
+
+</script>
+
+<br>
+<button onmousedown="moveleft()" onmouseup="clearmove()">LEFT</button>
+<button onmousedown="moveright()" onmouseup="clearmove()">RIGHT</button><br><br>
+<p>your score: <b id="score">0</b></p>
+<p>The red square moves one pixel to the right, 50 times per second.</p>
+<p>this is my assginment.</p>
+
+</body>
+</html>
+

@@ -1,0 +1,13 @@
+This sample code is designed for assignment3 of CS460/560
+OS: MacOSX
+---------------------------------------------------------
+
+Prerequisite:
+
+The code is built on glut library. If your glut is not in default Framework path, then change makefile accordingly. 
+
+
+TO BUILD and RUN:
+
+$ make
+$./project
