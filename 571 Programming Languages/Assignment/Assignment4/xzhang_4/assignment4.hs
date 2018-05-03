@@ -7,13 +7,11 @@ append []ys = ys
 append (x:xs)ys = x:append xs ys
 union [] [] = []
 union [] (y:ys) = union [y] ys
-union (x:xs) []
-    |xs ==[] = [x]
-    |otherwise = union [x] xs
+union (xs) [] = xs
 union (x:xs) (y:ys)
     |member x xs = union xs (y:ys)
     |member y (x:xs) = union (x:xs) ys
-    |otherwise = append (x:xs) [y]
+    |otherwise = union(append (x:xs) [y]) ys
  
 --2.delete
 deletek k n[] = [] 
