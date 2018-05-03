@@ -7,7 +7,6 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
 public class VoterCli {
-
     class User{
         String userName;
         String vNumber;
@@ -16,7 +15,6 @@ public class VoterCli {
             this.vNumber = number;
         }
     }
-
     private Socket socket;
     private BufferedReader reader;
     private PrintWriter writer;
@@ -24,29 +22,22 @@ public class VoterCli {
     private RSAPublicKey vfPublicKey;
     private RSAPrivateKey priKey;
 
-
     public String sendMessage(String message) throws Exception {
-
         return sendMessage(message,true);
     }
-
         public String sendMessage(String message ,Boolean wait) throws Exception{
         String result="";
-
             writer.println(message);
             String line;
             if (wait){
                 result = reader.readLine();
                 result = result.replace("@@","\n");
             }
-
             if (result == null) socket.close();
         return result;
     }
 
-
     public void voteMethod() throws IOException,Exception{
-
         String welcome = "======================\n"+
                 "Welcome, "+user.userName+"\n Main Menu\n" +
                 "Please enter a number (1-4) \n1. Vote\n" +
@@ -54,10 +45,8 @@ public class VoterCli {
                 "3. Election result\n" +
                 "4. Quit";
         System.out.println(welcome);
-
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String menu = br.readLine();
-
         switch (Integer.parseInt(menu)){
             case 1:
                 String code = sendMessage(menu);
@@ -87,38 +76,40 @@ public class VoterCli {
                 }
                 voteMethod();
                 break;
+            case 4:
+                sendMessage("4");
+                break;
                 default:
         }
-
     }
 
     public  void buildClient(String[] args) throws IOException, Exception{
         String ip = "127.0.0.1";
         Integer port = 8888;
         if (args.length == 3){
-            ip = args[1];
-            port = Integer.parseInt(args[2]);
+            ip = args[0];
+            port = Integer.parseInt(args[1]);
         }
-
         socket = new Socket(ip, port);
-
         reader = new BufferedReader(new InputStreamReader(socket.getInputStream(),"UTF-8"));
         writer = new PrintWriter(socket.getOutputStream(), true);
-
         vfPublicKey =  RSAEncrypt.loadPublicKeyByFile("VoterCliCer/vf_public.pem");
 
         boolean verifyUser = false;
-
         while (!verifyUser){
             System.out.println("please input your user name:");
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             String userName = br.readLine();
+
+            if (userName.compareTo("Alice") == 0||userName.compareTo("Bob")==0||userName.compareTo("John")==0){
+
+            }else {
+                System.out.println("wrong user name!");
+                continue;
+            }
             System.out.println("please input your registration number:");
             br = new BufferedReader(new InputStreamReader(System.in));
             String vNumber = br.readLine();
-            //br.close();
-
-
             String encryptInfo = RSAEncrypt.encrypt(vfPublicKey,(userName+"||"+vNumber));
             priKey = RSAEncrypt.loadPrivateKeyByFile("VoterCliCer/"+userName+"_private.pem");
             String sign = RSAEncrypt.signature(priKey,userName);
@@ -133,21 +124,16 @@ public class VoterCli {
                 verifyUser = true;
             }
         }
-
         voteMethod();
-        socket.close();
-
+        if (socket!=null) socket.close();
     }
 
     public static void main(String[] args) throws IOException {
         try {
-
             VoterCli voter = new VoterCli();
             voter.buildClient(args);
-
         } catch (Exception e) {
             System.out.println("can not listen to:" + e);// 出错，打印出错信息
         }
     }
-
 }

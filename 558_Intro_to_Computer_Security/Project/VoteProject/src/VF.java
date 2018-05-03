@@ -20,9 +20,8 @@ public class VF {
             this.vNumber = number;
         }
     }
-
+    private int socketCount = 0;
     public class ServerThread extends Thread {
-
         Socket socket = null;
         private BufferedReader reader;
         private PrintWriter writer;
@@ -31,7 +30,6 @@ public class VF {
         public ServerThread(Socket socket) {
             this.socket = socket;
         }
-
         public void resetReaderAndWriter() throws IOException{
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream(),"UTF-8"));
             writer = new PrintWriter(socket.getOutputStream(), true);
@@ -51,7 +49,6 @@ public class VF {
                     new BufferedReader(fileReader);
             boolean validName = false;
             String line = null;
-
             while((line = bufferedReader.readLine()) != null) {
                 String findName = line.split(" ")[0];
                 if (findName.compareTo(userName) == 0 ){
@@ -74,7 +71,6 @@ public class VF {
             }
             return null;
         }
-
         public boolean checkVoteValid(User user) throws IOException{
             String history = lookupHistory(user);
             if (history.compareTo(NOHISTORY) == 0) return true;
@@ -174,21 +170,18 @@ public class VF {
                     result2 = vNumber;
                 }
             }
-
             String winUser = Integer.parseInt(result1)>Integer.parseInt(result2)?user1:user2;
             return (winUser+" Win@@ "+user1+" "+result1+"@@ "+user2+" "+result2);
         }
 
         public void printTheResultIfNeeded() throws IOException{
-            if (isAllUsersVoted()){
-                System.out.println(getTheVoteResult());
-            }
+            if (isAllUsersVoted()) System.out.println(getTheVoteResult().replace("@@","\n"));
         }
 
         public String getUserName_vNumber() throws  IOException{
-
             String message = reader.readLine();
             System.out.println("Client: "+message);
+            if (message == null) shutdown();
             //in.close();
             return message;
         }
@@ -200,41 +193,45 @@ public class VF {
             resetReaderAndWriter();
             if (wait){
                 result = reader.readLine();
+                if (result == null) shutdown();
                 System.out.println("Client: "+result);
             }
-
-
             return result;
         }
 
         public String sendResponseString(String message) throws IOException{
             writer.println(message);
-
             resetReaderAndWriter();
             String result = reader.readLine();
             System.out.println("Client: "+result);
+            if (result == null) socket.close();
 
             return result;
+        }
+        public void shutdown() throws IOException{
+            if(writer!=null) writer.close();
+            if(reader!=null) reader.close();
+            if(socket!=null) socket.close();
+            System.out.println("Server On:"+ --socketCount);
         }
 
         public void run(){
 
         try {
+            System.out.println("Server On:"+ ++socketCount);
             priKey = RSAEncrypt.loadPrivateKeyByFile("VFCer/vf_private.pem");
-
             //get user
             User user = null;
             String select = "";
             resetReaderAndWriter();
             while (user == null){
                 String userName_vnumber = getUserName_vNumber();
-                if (userName_vnumber!=null) {
-                    user = getTheUser(userName_vnumber);
-                    select = sendResponseCode(user == null ? 0 : 1,user == null?false:true);
-                }
+                if (userName_vnumber == null)break;
+                user = getTheUser(userName_vnumber);
+                select = sendResponseCode(user == null ? 0 : 1,user == null?false:true);
             }
             boolean goToMenu = true;
-            while (goToMenu){
+            while (user!=null && goToMenu){
                 switch (Integer.parseInt(select)){
                     case 1:
                         if (checkVoteValid(user)){
@@ -263,56 +260,33 @@ public class VF {
                         goToMenu = false;
                         break;
                     default:
-
                 }
             }
-
-
-            if(writer!=null)
-                writer.close();
-
-            if(reader!=null)
-                reader.close();
-
-            if(socket!=null)
-                socket.close();
-
-
+            shutdown();
         }catch (Exception e){
-
+            System.out.println("run :"+e);
         }
-
-
-
         }
     }
-
-
     public  void buildServer(String[] args) throws IOException,Exception{
         int port = 8888;
         if (args.length == 2){
-            port = Integer.parseInt(args[1]);
+            port = Integer.parseInt(args[0]);
         }
         ServerSocket server = new ServerSocket(port);
-
-        int counter = 0;
         while (true){
             Socket socket = server.accept();
             ServerThread serverThread=new ServerThread(socket);
             serverThread.start();
-            System.out.println("Server On:"+ ++counter);
         }
-
-        //server.close();
     }
-
     public static void main(String[] args) throws IOException,Exception{
         try {
             VF vf = new VF();
             System.out.println("Build Server");
             vf.buildServer(args);
         }catch (Exception e){
-
+            System.out.println("main :"+e);
         }
     }
 }

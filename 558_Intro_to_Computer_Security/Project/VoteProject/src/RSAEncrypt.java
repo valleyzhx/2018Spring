@@ -28,15 +28,11 @@ public class RSAEncrypt {
             String publicKeyPEM = temp.replace("-----BEGIN PUBLIC KEY-----", "")
                     .replace("-----END PUBLIC KEY-----", "")
                     .replaceAll("\\s", "");
-
-
             byte [] decoded = Base64.getDecoder().decode(publicKeyPEM);
-
             X509EncodedKeySpec spec =
                     new X509EncodedKeySpec(decoded);
             KeyFactory kf = KeyFactory.getInstance("RSA");
             return (RSAPublicKey)kf.generatePublic(spec);
-
         } catch (IOException e) {
             throw new Exception("input error");
         } catch (NullPointerException e) {
@@ -51,18 +47,14 @@ public class RSAEncrypt {
             byte[] keyBytes = new byte[(int) f.length()];
             dis.readFully(keyBytes);
             dis.close();
-
             String temp = new String(keyBytes);
             String privKeyPEM = temp.replace("-----BEGIN PRIVATE KEY-----", "")
                     .replace("-----END PRIVATE KEY-----", "")
                     .replaceAll("\\s", "");
-
             byte [] decoded = Base64.getDecoder().decode(privKeyPEM);
-
             PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decoded);
             KeyFactory kf = KeyFactory.getInstance("RSA");
             return (RSAPrivateKey)kf.generatePrivate(spec);
-
         } catch (IOException e) {
             throw new Exception("input error");
         } catch (NullPointerException e) {
@@ -82,7 +74,6 @@ public class RSAEncrypt {
         byte[][] arrays=new byte[x][];
         byte[] array;
         for(int i=0; i<x; i++){
-
             if(i==x-1 && bytes.length%splitLength!=0){
                 array=new byte[bytes.length%splitLength];
                 System.arraycopy(bytes, i*splitLength, array, 0, bytes.length%splitLength);
@@ -181,10 +172,5 @@ public class RSAEncrypt {
         }
         return sb.toString();
     }
-
-
-
-
-
 
 }

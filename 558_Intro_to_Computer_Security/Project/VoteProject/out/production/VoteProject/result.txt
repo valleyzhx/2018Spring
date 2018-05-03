@@ -1,2 +1,2 @@
-Tim 4
-Linda 1
+Tim 1
+Linda 2
