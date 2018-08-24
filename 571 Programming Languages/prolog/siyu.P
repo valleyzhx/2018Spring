@@ -1,0 +1,49 @@
+max([X],X).
+max([X,Y|Xs], Res):-
+	X >= Y,
+	max([X|Xs],Res);max([Y|Xs],Res).
+
+test(N,K,[],[]).
+test(N,K,[X|Xs],Res):-
+	(K\=1,
+	K1 is K - 1,
+	Res = [X|Res1],
+	test(N,K1,Xs,Res1)
+	;
+	test(N,N,Xs,Res)
+).	
+deleteNTerm(N,L,Res) :- test(N,N,L,Res).
+
+
+
+replace_first_k(K,[],[]).
+replace_first_k(0,Xs,Xs).
+replace_first_k(K,[X|Xs],Res):-
+	(X == 1,
+	Res = [X1|Res2],
+	X1 is 8,
+	K1 is K - 1,
+	replace_first_k(K1,Xs,Res2)
+	;
+	replace_first_k(K,Xs,Res1),
+	Res = [X|Res1]
+	).
+
+/**position1(X,[H],K,Res) :-
+	(
+	X == H,
+	Res = [K] + [Res]
+	)
+	*/
+position1(X,[],K,[]).
+position1(X,[H|T],K,Res):-
+	(
+	X==H,
+	Res = [K|Res1],
+	K1 is K+1,
+	position1(X,T,K1,Res1)
+	;
+	K2 is K+1,
+	position1(X,T,K2,Res)
+	).
+position(X,L,Res) :- position1(X,L,1,Res).

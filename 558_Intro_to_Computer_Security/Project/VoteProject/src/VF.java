@@ -180,7 +180,7 @@ public class VF {
 
         public String getUserName_vNumber() throws  IOException{
             String message = reader.readLine();
-            System.out.println("Client: "+message);
+            System.out.println("Client input: "+message);
             if (message == null) shutdown();
             //in.close();
             return message;
@@ -194,7 +194,7 @@ public class VF {
             if (wait){
                 result = reader.readLine();
                 if (result == null) shutdown();
-                System.out.println("Client: "+result);
+                System.out.println("Client input: "+result);
             }
             return result;
         }
@@ -203,22 +203,22 @@ public class VF {
             writer.println(message);
             resetReaderAndWriter();
             String result = reader.readLine();
-            System.out.println("Client: "+result);
-            if (result == null) socket.close();
-
+            System.out.println("Client input: "+result);
+            if (result == null) shutdown();
             return result;
         }
         public void shutdown() throws IOException{
             if(writer!=null) writer.close();
             if(reader!=null) reader.close();
-            if(socket!=null) socket.close();
-            System.out.println("Server On:"+ --socketCount);
+            if(socket!=null) {
+                socket.close();
+                System.out.println("Server down:"+ --socketCount);
+            }
         }
 
         public void run(){
 
         try {
-            System.out.println("Server On:"+ ++socketCount);
             priKey = RSAEncrypt.loadPrivateKeyByFile("VFCer/vf_private.pem");
             //get user
             User user = null;
@@ -230,8 +230,9 @@ public class VF {
                 user = getTheUser(userName_vnumber);
                 select = sendResponseCode(user == null ? 0 : 1,user == null?false:true);
             }
+            if (user == null)return;
             boolean goToMenu = true;
-            while (user!=null && goToMenu){
+            while (goToMenu){
                 switch (Integer.parseInt(select)){
                     case 1:
                         if (checkVoteValid(user)){
@@ -258,11 +259,12 @@ public class VF {
                         break;
                     case 4:
                         goToMenu = false;
+                        shutdown();
                         break;
                     default:
                 }
             }
-            shutdown();
+
         }catch (Exception e){
             System.out.println("run :"+e);
         }
@@ -276,6 +278,7 @@ public class VF {
         ServerSocket server = new ServerSocket(port);
         while (true){
             Socket socket = server.accept();
+            System.out.println("Server up:"+ ++socketCount);
             ServerThread serverThread=new ServerThread(socket);
             serverThread.start();
         }

@@ -14,7 +14,6 @@ import java.util.Base64;
 
 public class RSAEncrypt {
 
-
     public static RSAPublicKey loadPublicKeyByFile(String file) throws Exception {
         try {
             File f = new File(file);
